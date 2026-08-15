@@ -136,19 +136,7 @@ jobs:
           target: default
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: |
-            set -e
-            APK=$(find apk -name '*.apk' | head -n 1)
-            echo "Installing $APK"
-            adb install -r -g "$APK"
-            echo "Launching app"
-            adb shell am start -W -n ru.playsoftware.j2meloader/.MainActivity
-            sleep 5
-            PID=$(adb shell pidof ru.playsoftware.j2meloader)
-            echo "App PID: $PID"
-            test -n "$PID" && echo "SMOKE-TEST PASS: app is running" || { echo "SMOKE-TEST FAIL: app crashed"; adb logcat -d -t 200 | grep -E "FATAL|AndroidRuntime|j2meloader" || true; exit 1; }
-            adb exec-out screencap -p > smoke-screenshot.png
-            ls -la smoke-screenshot.png
+          script: bash .github/smoke-test.sh
 
       - name: Upload screenshot
         if: always()
