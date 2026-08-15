@@ -32,7 +32,7 @@ android {
                 keystoreProps.load(new FileInputStream(rootProject.file("keystore.properties")))
                 keyAlias keystoreProps['keyAlias']
                 keyPassword keystoreProps['keyPassword']
-                storeFile file(keystoreProps['storeFile'])
+                storeFile rootProject.file(keystoreProps['storeFile'])
                 storePassword keystoreProps['storePassword']
             }
         }
