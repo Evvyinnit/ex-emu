@@ -1,0 +1,178 @@
+name: Build Exj2 APK
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NDK_VERSION: 23.0.7599858
+  COMPILE_SDK: 34
+  BUILD_TOOLS: 34.0.0
+  APK_BASE: Exj2-1.8.2-open-release
+
+jobs:
+  build:
+    name: Build signed release APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Android SDK + NDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: >-
+            platforms;android-${{ env.COMPILE_SDK }}
+            build-tools;${{ env.BUILD_TOOLS }}
+            ndk;${{ env.NDK_VERSION }}
+
+      - name: Set up Gradle (cached)
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
+      - name: Write signing config from secrets
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > exj2-release.jks
+          cat > keystore.properties <<EOF
+          keyAlias=$ANDROID_KEY_ALIAS
+          keyPassword=$ANDROID_KEY_PASSWORD
+          storeFile=exj2-release.jks
+          storePassword=$ANDROID_KEYSTORE_PASSWORD
+          EOF
+          ls -la exj2-release.jks keystore.properties
+
+      - name: Build signed release APK
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon assembleOpenRelease 2>&1 | tail -n 100
+
+      - name: Build debug APK (fallback, unsigned setup)
+        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        run: |
+          set -o pipefail
+          ./gradlew --no-daemon assembleOpenDebug 2>&1 | tail -n 100
+
+      - name: Verify APK exists
+        run: |
+          ls -la app/build/outputs/apk/open/release/ app/build/outputs/apk/open/debug/ 2>/dev/null || true
+          find app/build/outputs/apk -name '*.apk' -exec ls -la {} \;
+
+      - name: Upload signed release APK
+        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APK_BASE }}
+          path: app/build/outputs/apk/open/release/*.apk
+          if-no-files-found: error
+
+      - name: Upload debug APK
+        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: Exj2-debug
+          path: app/build/outputs/apk/open/debug/*.apk
+          if-no-files-found: error
+
+  smoke-test:
+    name: Emulator smoke test (prove it launches)
+    needs: build
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.APK_BASE }}
+          path: apk
+
+      - name: Boot emulator, install, launch, screenshot
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 34
+          arch: x86_64
+          target: default
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: |
+            set -e
+            APK=$(find apk -name '*.apk' | head -n 1)
+            echo "Installing $APK"
+            adb install -r -g "$APK"
+            echo "Launching app"
+            adb shell am start -W -n ru.playsoftware.j2meloader/.MainActivity
+            sleep 5
+            PID=$(adb shell pidof ru.playsoftware.j2meloader)
+            echo "App PID: $PID"
+            test -n "$PID" && echo "SMOKE-TEST PASS: app is running" || { echo "SMOKE-TEST FAIL: app crashed"; adb logcat -d -t 200 | grep -E "FATAL|AndroidRuntime|j2meloader" || true; exit 1; }
+            adb exec-out screencap -p > smoke-screenshot.png
+            ls -la smoke-screenshot.png
+
+      - name: Upload screenshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-screenshot
+          path: smoke-screenshot.png
+          if-no-files-found: ignore
+
+  release:
+    name: Attach APK to GitHub Release
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.APK_BASE }}
+          path: apk
+
+      - name: Generate checksums
+        run: |
+          cd apk
+          sha256sum *.apk > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Create release and attach APK
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            apk/*.apk
+            apk/SHA256SUMS.txt
+          generate_release_notes: true
