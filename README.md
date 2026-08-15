@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/Evvyinnit/exj2/actions/workflows/build.yml/badge.svg)](https://github.com/Evvyinnit/exj2/actions/workflows/build.yml)
 
-**Exj2** is a fully working J2ME (Java ME) games emulator for Android, built on the
+**Exj2** is a fully working J2ME (Java ME) games emulator for Android, powered by the
 excellent open-source [J2ME Loader](https://github.com/nikita36078/J2ME-Loader) engine
 (which powers the original "J2ME Loader" app on Google Play).
 
@@ -12,15 +12,9 @@ excellent open-source [J2ME Loader](https://github.com/nikita36078/J2ME-Loader) 
 
 ## Getting the APK
 
-Every push to `main` builds a **signed release APK** on GitHub Actions:
-
-1. Open the **Actions** tab
-2. Select the latest **Build Exj2 APK** run
-3. Download the `Exj2-<version>-open-release` artifact → install it on your phone
-
-Push a `v*` tag (e.g. `git tag v1.0.0 && git push origin v1.0.0`) to also publish the
-signed APK as a GitHub Release. Each build additionally runs an emulator smoke test
-that installs the APK, launches the app, and verifies it runs.
+The latest signed release APK is published on the [Releases](https://github.com/Evvyinnit/exj2/releases)
+page — download and install it on your phone. Pushing a `v*` tag (e.g.
+`git tag v1.0.0 && git push origin v1.0.0`) publishes a new signed release.
 
 ## Building locally
 

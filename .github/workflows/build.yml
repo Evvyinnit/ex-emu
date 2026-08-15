@@ -48,7 +48,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Write signing config from secrets
-        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        if: secrets.ANDROID_KEYSTORE_BASE64 != ''
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
@@ -65,7 +65,7 @@ jobs:
           ls -la exj2-release.jks keystore.properties
 
       - name: Build signed release APK
-        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        if: secrets.ANDROID_KEYSTORE_BASE64 != ''
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
@@ -73,7 +73,7 @@ jobs:
           ./gradlew --no-daemon assembleOpenRelease 2>&1 | tail -n 100
 
       - name: Build debug APK (fallback, unsigned setup)
-        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        if: secrets.ANDROID_KEYSTORE_BASE64 == ''
         run: |
           set -o pipefail
           ./gradlew --no-daemon assembleOpenDebug 2>&1 | tail -n 100
@@ -84,7 +84,7 @@ jobs:
           find app/build/outputs/apk -name '*.apk' -exec ls -la {} \;
 
       - name: Upload signed release APK
-        if: env.ANDROID_KEYSTORE_BASE64 != ''
+        if: secrets.ANDROID_KEYSTORE_BASE64 != ''
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_BASE }}
@@ -92,7 +92,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload debug APK
-        if: env.ANDROID_KEYSTORE_BASE64 == ''
+        if: secrets.ANDROID_KEYSTORE_BASE64 == ''
         uses: actions/upload-artifact@v4
         with:
           name: Exj2-debug
@@ -118,7 +118,8 @@ jobs:
       - name: Download APK
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.APK_BASE }}
+          pattern: Exj2-*
+          merge-multiple: true
           path: apk
 
       - name: Boot emulator, install, launch, screenshot
@@ -160,7 +161,8 @@ jobs:
       - name: Download APK
         uses: actions/download-artifact@v4
         with:
-          name: ${{ env.APK_BASE }}
+          pattern: Exj2-*
+          merge-multiple: true
           path: apk
 
       - name: Generate checksums
