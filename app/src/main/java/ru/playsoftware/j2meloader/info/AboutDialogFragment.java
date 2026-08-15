@@ -35,13 +35,7 @@ public class AboutDialogFragment extends DialogFragment {
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		StringBuilder message = new StringBuilder().append(getText(R.string.version))
 				.append(BuildConfig.VERSION_NAME)
-				.append(getText(R.string.about_email))
-				.append(getText(R.string.about_github))
-				.append(getText(R.string.about_4pda))
-				.append(getText(R.string.about_xda))
-				.append(getText(R.string.about_emugen_wiki))
-				.append(getText(R.string.about_crowdin))
-				.append(getText(R.string.about_copyright));
+				.append(getText(R.string.about_credits));
 		TextView tv = new TextView(getActivity());
 		tv.setText(Html.fromHtml(message.toString()));
 		tv.setTextSize(16);

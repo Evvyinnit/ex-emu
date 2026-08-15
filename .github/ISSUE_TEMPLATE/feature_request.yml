@@ -6,7 +6,7 @@ body:
     id: quick-summary
     attributes:
       label: Quick summary
-      description: Please briefly describe what feature you would like J2ME Loader to have.
+      description: Please briefly describe what feature you would like Exj2 to have.
     validations:
       required: true
   - type: textarea

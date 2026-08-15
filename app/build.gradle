@@ -118,7 +118,7 @@ android {
 
     applicationVariants.all {
         if (buildType.name == 'debug' && flavorName != 'midlet') {
-            resValue 'string', 'app_name', 'JL-Debug'
+            resValue 'string', 'app_name', 'Exj2-Debug'
         }
         def baseName = flavorName == 'midlet' ? "${midletArchivesBaseName}-" : "${rootProject.name}-"
         outputs.all {
