@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,6 +33,8 @@ fun LemuroidGameListRow(
                     onClick = onClick,
                     onLongClick = onLongClick,
                 ),
+        shape = LemuroidListShape,
+        color = MaterialTheme.colorScheme.surface,
     ) {
         Row(
             modifier =

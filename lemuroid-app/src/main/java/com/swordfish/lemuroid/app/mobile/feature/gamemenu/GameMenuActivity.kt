@@ -25,8 +25,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -49,6 +47,7 @@ import com.swordfish.lemuroid.app.mobile.feature.gamemenu.states.GameMenuStatesS
 import com.swordfish.lemuroid.app.mobile.feature.gamemenu.states.GameMenuStatesViewModel
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppTheme
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppThemePreferences
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidCardShape
 import com.swordfish.lemuroid.app.shared.GameMenuContract
 import com.swordfish.lemuroid.app.shared.coreoptions.LemuroidCoreOption
 import com.swordfish.lemuroid.app.shared.input.InputDeviceManager
@@ -250,7 +249,7 @@ class GameMenuActivity : RetrogradeComponentActivity() {
                         .padding()
                         .fillMaxHeight()
                         .width(panelWidth)
-                        .clip(MaterialTheme.shapes.large),
+                        .clip(LemuroidCardShape),
             ) {
                 Column(modifier = Modifier.fillMaxSize()) {
                     content()

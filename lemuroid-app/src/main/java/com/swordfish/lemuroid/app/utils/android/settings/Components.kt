@@ -23,6 +23,7 @@ import com.alorma.compose.settings.storage.base.SettingValueState
 import com.alorma.compose.settings.ui.SettingsMenuLink
 import com.alorma.compose.settings.ui.SettingsSlider
 import com.alorma.compose.settings.ui.SettingsSwitch
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidCardShape
 import kotlin.math.roundToInt
 
 @Composable
@@ -116,7 +117,9 @@ fun LemuroidCardSettingsGroup(
                     .fillMaxWidth()
                     .padding(start = 16.dp, end = 16.dp),
         ) {
-            OutlinedCard {
+            OutlinedCard(
+                shape = LemuroidCardShape,
+            ) {
                 if (title != null) {
                     SettingsGroupTitleSmall(title)
                 }

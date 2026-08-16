@@ -14,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.alorma.compose.settings.storage.memory.rememberMemoryIntSettingState
 import com.swordfish.lemuroid.R
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidCardShape
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidCardSettingsGroup
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidSettingsList
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidSettingsPage
@@ -35,6 +36,8 @@ fun CoresSelectionScreen(
                 CardDefaults.elevatedCardColors(
                     containerColor = MaterialTheme.colorScheme.tertiaryContainer,
                 ),
+            shape = LemuroidCardShape,
+            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 0.dp),
             modifier =
                 Modifier
                     .fillMaxWidth()

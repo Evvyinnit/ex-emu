@@ -33,7 +33,12 @@ fun FavoriteToggle(
         Icon(
             image,
             contentDescription = stringResource(R.string.favorites),
-            tint = MaterialTheme.colorScheme.onBackground,
+            tint =
+                if (isToggled) {
+                    MaterialTheme.colorScheme.secondary
+                } else {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
             modifier = Modifier.size(24.dp),
         )
     }
