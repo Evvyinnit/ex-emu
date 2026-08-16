@@ -16,7 +16,7 @@ env:
   NDK_VERSION: 23.0.7599858
   COMPILE_SDK: 35
   BUILD_TOOLS: 34.0.0
-  APK_BASE: ExEmu-2.1.0-release
+  APK_BASE: ExEmu-2.2.0-release
 
 jobs:
   build:
