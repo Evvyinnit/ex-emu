@@ -38,7 +38,7 @@ class GamesViewModel(
 
     private val metaSystemId = MutableStateFlow(initialMetaSystem)
 
-    private val sortMode = MutableStateFlow(initialSortMode(initialMetaSystem))
+    val sortMode = MutableStateFlow(initialSortMode(initialMetaSystem))
 
     private val letterFilter = MutableStateFlow<String?>(null)
 

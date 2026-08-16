@@ -51,6 +51,13 @@
     <string name="games_view_carousel">Carousel</string>
     <string name="games_letter_all">All</string>
     <string name="title_sort">Sort</string>
+    <string name="setup_welcome_title">Welcome to Ex Emu</string>
+    <string name="setup_welcome_message">Add the folder with your ROMs to get started. Games are scanned automatically and cores are downloaded on demand.</string>
+    <string name="setup_pick_folder">Choose ROM folder</string>
+    <string name="setup_folder_hint">You can change the folder later in Settings</string>
+    <string name="setup_get_started">Get started</string>
+    <string name="settings_title_hidden_games">Hidden games</string>
+    <string name="settings_description_hidden_games">Restore games you hid</string>
 
     <string name="settings_category_general">General</string>
     <string name="settings_category_appearance">Appearance</string>

@@ -106,6 +106,12 @@ enum class MainRoute(
         parent = SETTINGS,
         showBottomNavigation = false,
     ),
+    SETTINGS_HIDDEN_GAMES(
+        route = "settings/hiddengames",
+        titleId = R.string.settings_title_hidden_games,
+        parent = SETTINGS,
+        showBottomNavigation = false,
+    ),
     ;
 
     val root = root()

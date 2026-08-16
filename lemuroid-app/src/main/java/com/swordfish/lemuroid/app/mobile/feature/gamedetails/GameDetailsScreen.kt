@@ -81,7 +81,7 @@ fun GameDetailsScreen(
                     ?: -1
             if (overrideIndex >= 0) overrideIndex + 1 else 0
         }
-    val coreState = remember(currentGame.id, coreIndex) { rememberMemoryIntSettingState(coreIndex) }
+    val coreState = rememberMemoryIntSettingState(coreIndex, currentGame.id)
 
     Column(
         modifier =
@@ -168,15 +168,17 @@ fun GameDetailsScreen(
                     )
                 }
             }
-            if (!currentGame.description.isNullOrBlank()) {
+            val description = currentGame.description
+            if (!description.isNullOrBlank()) {
                 Text(
-                    text = currentGame.description,
+                    text = description,
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
-            if (!currentGame.screenshotUrl.isNullOrBlank()) {
+            val screenshotUrl = currentGame.screenshotUrl
+            if (!screenshotUrl.isNullOrBlank()) {
                 AsyncImage(
-                    model = currentGame.screenshotUrl,
+                    model = screenshotUrl,
                     contentDescription = currentGame.title,
                     modifier =
                         Modifier

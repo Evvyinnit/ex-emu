@@ -90,6 +90,13 @@ private fun MiscSettings(
             onClick = { navController.navigateToRoute(MainRoute.SETTINGS_CORES_SELECTION) },
         )
         LemuroidSettingsMenuLink(
+            title = { Text(text = stringResource(id = R.string.settings_title_hidden_games)) },
+            subtitle = {
+                Text(text = stringResource(id = R.string.settings_description_hidden_games))
+            },
+            onClick = { navController.navigateToRoute(MainRoute.SETTINGS_HIDDEN_GAMES) },
+        )
+        LemuroidSettingsMenuLink(
             title = { Text(text = stringResource(id = R.string.settings_title_display_bios_info)) },
             subtitle = {
                 Text(text = stringResource(id = R.string.settings_description_display_bios_info))

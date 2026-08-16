@@ -49,10 +49,13 @@ import com.swordfish.lemuroid.app.mobile.feature.settings.coreselection.CoresSel
 import com.swordfish.lemuroid.app.mobile.feature.settings.coreselection.CoresSelectionViewModel
 import com.swordfish.lemuroid.app.mobile.feature.settings.general.SettingsScreen
 import com.swordfish.lemuroid.app.mobile.feature.settings.general.SettingsViewModel
+import com.swordfish.lemuroid.app.mobile.feature.settings.hiddengames.HiddenGamesScreen
+import com.swordfish.lemuroid.app.mobile.feature.settings.hiddengames.HiddenGamesViewModel
 import com.swordfish.lemuroid.app.mobile.feature.settings.inputdevices.InputDevicesSettingsScreen
 import com.swordfish.lemuroid.app.mobile.feature.settings.inputdevices.InputDevicesSettingsViewModel
 import com.swordfish.lemuroid.app.mobile.feature.settings.savesync.SaveSyncSettingsScreen
 import com.swordfish.lemuroid.app.mobile.feature.settings.savesync.SaveSyncSettingsViewModel
+import com.swordfish.lemuroid.app.mobile.feature.setup.SetupScreen
 import com.swordfish.lemuroid.app.mobile.feature.shortcuts.ShortcutsGenerator
 import com.swordfish.lemuroid.app.mobile.feature.systems.MetaSystemsScreen
 import com.swordfish.lemuroid.app.mobile.feature.systems.MetaSystemsViewModel
@@ -65,6 +68,7 @@ import com.swordfish.lemuroid.app.shared.input.InputDeviceManager
 import com.swordfish.lemuroid.app.shared.main.BusyActivity
 import com.swordfish.lemuroid.app.shared.main.GameLaunchTaskHandler
 import com.swordfish.lemuroid.app.shared.settings.SettingsInteractor
+import com.swordfish.lemuroid.app.shared.settings.StorageFrameworkPickerLauncher
 import com.swordfish.lemuroid.common.coroutines.safeLaunch
 import com.swordfish.lemuroid.ext.feature.review.ReviewManager
 import com.swordfish.lemuroid.lib.android.RetrogradeComponentActivity
@@ -149,6 +153,23 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
         }
 
         AppTheme(darkTheme = darkTheme) {
+            val setupPrefs = SharedPreferencesHelper.getSharedPreferences(context)
+            var setupComplete by
+                remember {
+                    mutableStateOf(setupPrefs.getBoolean(context.getString(R.string.pref_key_setup_complete), false))
+                }
+
+            if (!setupComplete) {
+                SetupScreen(
+                    onPickFolder = { StorageFrameworkPickerLauncher.pickFolder(context) },
+                    onComplete = {
+                        setupPrefs.edit().putBoolean(context.getString(R.string.pref_key_setup_complete), true).apply()
+                        setupComplete = true
+                    },
+                )
+                return@AppTheme
+            }
+
             val navBackStackEntry = navController.currentBackStackEntryAsState()
             val currentDestination = navBackStackEntry.value?.destination
             val currentRoute =
@@ -378,6 +399,15 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                                             application,
                                             saveSyncManager,
                                         ),
+                                ),
+                        )
+                    }
+                    composable(MainRoute.SETTINGS_HIDDEN_GAMES) {
+                        HiddenGamesScreen(
+                            modifier = Modifier.padding(padding),
+                            viewModel =
+                                viewModel(
+                                    factory = HiddenGamesViewModel.Factory(retrogradeDb),
                                 ),
                         )
                     }
