@@ -9,7 +9,7 @@
     <string name="licenses">Лицензиялар</string>
     <string name="profiles">Профильдер</string>
     <string name="save_log">Логты сақтау</string>
-    <string name="about_message">Бұл қолданба J2ME ойындармен қолданбаларды ашуға мүмкіндік береді. Exj2 көптеген 2D және 3D ойындарды қолдайды (Mascot Capsule 3D-мен бірге).&lt;BR&gt;</string>
+    <string name="about_message">Бұл қолданба J2ME ойындармен қолданбаларды ашуға мүмкіндік береді. Ex Emu көптеген 2D және 3D ойындарды қолдайды (Mascot Capsule 3D-мен бірге).&lt;BR&gt;</string>
     <string name="help_message">&#8226;Кейбір жағдайларда сүзуді қосу өнімділікті айтарлықтай төмендетуі мүмкін. Ойын тым баяу болса, бұл баптауды өшіріңіз.&lt;BR&gt;&#8226;Экранның жыпылықтау мәселесін «Бірден өңдеу режимі» баптауын қосу арқылы шешуге болады.</string>
     <string name="author">Автор: </string>
     <string name="version">Нұсқа: </string>

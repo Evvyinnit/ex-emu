@@ -23,9 +23,14 @@ Ex Emu is developed by **Evvyinnit**.
 
 ## Getting the APK
 
-The latest signed release APK is published on the [Releases](https://github.com/Evvyinnit/ex-emu/releases)
-page — download and install it on your phone. Pushing a `v*` tag (e.g.
-`git tag v2.0.0 && git push origin v2.0.0`) publishes a new signed release
+Every push to `main` automatically builds a signed release APK in
+[GitHub Actions](https://github.com/Evvyinnit/ex-emu/actions) — download the
+`ExEmu-2.0.0-release` artifact from the latest successful run (an emulator
+smoke test proves the app launches before the run is green).
+
+Tagged releases are published on the [Releases](https://github.com/Evvyinnit/ex-emu/releases)
+page. Pushing a `v*` tag (e.g. `git tag v2.0.0 && git push origin v2.0.0`)
+builds the APK and attaches it (with SHA-256 checksums) to the release
 automatically.
 
 ## Building locally

@@ -61,14 +61,14 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > exj2-release.jks
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 -d > ex-emu-release.jks
           cat > keystore.properties <<EOF
           keyAlias=$ANDROID_KEY_ALIAS
           keyPassword=$ANDROID_KEY_PASSWORD
-          storeFile=exj2-release.jks
+          storeFile=ex-emu-release.jks
           storePassword=$ANDROID_KEYSTORE_PASSWORD
           EOF
-          ls -la exj2-release.jks keystore.properties
+          ls -la ex-emu-release.jks keystore.properties
 
       - name: Build release APK
         env:

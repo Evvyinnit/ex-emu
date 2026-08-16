@@ -67,7 +67,7 @@ public class Config {
 
 	static {
 		Context context = ContextHolder.getAppContext();
-		String appName = "Exj2";
+		String appName = "Ex Emu";
 		if (!BuildConfig.FULL_EMULATOR) {
 			appName = context.getString(R.string.app_name);
 		}
