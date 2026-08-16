@@ -9,10 +9,10 @@ echo "Installing $APK"
 adb install -r -g "$APK" || adb install -r "$APK"
 
 echo "Launching app"
-adb shell am start -W -n com.swordfish.lemuroid.app.mobile.feature.main/.MainActivity
+adb shell am start -W -n com.exemu/com.swordfish.lemuroid.app.mobile.feature.main.MainActivity
 sleep 8
 
-PID=$(adb shell pidof com.swordfish.lemuroid)
+PID=$(adb shell pidof com.exemu)
 echo "App PID: ${PID:-NONE}"
 
 if [ -n "$PID" ]; then
