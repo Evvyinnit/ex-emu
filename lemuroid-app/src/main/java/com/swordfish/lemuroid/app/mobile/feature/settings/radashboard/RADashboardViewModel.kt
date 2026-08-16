@@ -32,7 +32,7 @@ class RADashboardViewModel(
 
     private val service = RetroAchievementsService()
 
-    val state: StateFlow<State> = MutableStateFlow(State.Loading)
+    val state = MutableStateFlow<State>(State.Loading)
 
     init {
         viewModelScope.launch {

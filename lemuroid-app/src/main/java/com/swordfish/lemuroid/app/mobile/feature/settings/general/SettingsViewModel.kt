@@ -61,7 +61,7 @@ class SettingsViewModel(
 
     private val scraperService = ScreenScraperService()
 
-    val scrapeState: StateFlow<ScrapeState> = MutableStateFlow(ScrapeState.Idle)
+    val scrapeState = MutableStateFlow(ScrapeState.Idle)
 
     fun onScrapeAll() {
         if (scrapeState.value is ScrapeState.Running) {

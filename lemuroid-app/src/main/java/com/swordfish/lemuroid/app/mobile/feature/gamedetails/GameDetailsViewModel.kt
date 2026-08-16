@@ -14,6 +14,7 @@ import com.swordfish.lemuroid.app.shared.metadata.RaGameAchievements
 import com.swordfish.lemuroid.app.shared.metadata.RetroAchievementsService
 import com.swordfish.lemuroid.app.shared.metadata.ScraperCredentials
 import com.swordfish.lemuroid.app.shared.metadata.ScreenScraperService
+import com.swordfish.lemuroid.app.shared.metadata.copyWithScrapeResult
 import com.swordfish.lemuroid.lib.library.GameSystem
 import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
 import com.swordfish.lemuroid.lib.library.db.entity.Game
@@ -92,7 +93,7 @@ class GameDetailsViewModel(
         data object Error : AchievementsState()
     }
 
-    val achievementsState: StateFlow<AchievementsState> = MutableStateFlow(AchievementsState.Idle)
+    val achievementsState = MutableStateFlow<AchievementsState>(AchievementsState.Idle)
 
     fun onOpenAchievements(game: Game) {
         if (achievementsState.value is AchievementsState.Loading) {
