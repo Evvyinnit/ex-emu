@@ -43,15 +43,13 @@ fun LemuroidSettingsList(
     action: (@Composable () -> Unit)? = null,
     onItemSelected: ((Int, String) -> Unit)? = null,
 ) {
-    if (state.value >= items.size) {
-        throw IndexOutOfBoundsException("Current value for $title list setting cannot be grater than items size")
-    }
+    val safeSelectedIndex = state.value.coerceIn(0, items.lastIndex.coerceAtLeast(0))
 
     var showDialog by remember { mutableStateOf(false) }
 
     val safeSubtitle =
-        if (state.value >= 0 && useSelectedValueAsSubtitle) {
-            { Text(text = items[state.value]) }
+        if (useSelectedValueAsSubtitle) {
+            { Text(text = items.getOrElse(safeSelectedIndex) { "" }) }
         } else {
             subtitle
         }

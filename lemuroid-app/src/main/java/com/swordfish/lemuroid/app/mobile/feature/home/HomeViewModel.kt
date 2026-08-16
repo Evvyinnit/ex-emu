@@ -18,11 +18,9 @@ import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
 import com.swordfish.lemuroid.lib.library.db.entity.Game
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
@@ -30,7 +28,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-@OptIn(FlowPreview::class)
 class HomeViewModel(
     appContext: Context,
     retrogradeDb: RetrogradeDatabase,
@@ -38,7 +35,6 @@ class HomeViewModel(
 ) : ViewModel() {
     companion object {
         const val CAROUSEL_MAX_ITEMS = 10
-        const val DEBOUNCE_TIME = 100L
     }
 
     class Factory(
@@ -141,7 +137,6 @@ class HomeViewModel(
                 )
 
             uiStatesFlow
-                .debounce(DEBOUNCE_TIME)
                 .flowOn(Dispatchers.IO)
                 .collect { uiStates.value = it }
         }

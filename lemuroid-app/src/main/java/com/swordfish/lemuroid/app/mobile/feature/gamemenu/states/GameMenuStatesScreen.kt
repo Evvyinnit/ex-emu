@@ -1,10 +1,10 @@
 package com.swordfish.lemuroid.app.mobile.feature.gamemenu.states
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,8 +21,8 @@ fun GameMenuStatesScreen(
 ) {
     val state = viewModel.uiStates.collectAsState(initial = GameMenuStatesViewModel.State())
 
-    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-        state.value.entries.forEachIndexed { index, entry ->
+    LazyColumn(modifier = Modifier.fillMaxSize()) {
+        itemsIndexed(state.value.entries) { index, entry ->
             LemuroidSettingsMenuLink(
                 title = { Text(text = entry.title) },
                 subtitle = { Text(text = entry.description) },

@@ -54,6 +54,7 @@ fun SettingsScreen(
             scanInProgress = scanInProgress,
         )
         GeneralSettings()
+        AppearanceSettings()
         InputSettings(navController = navController)
         MiscSettings(
             indexingInProgress = indexingInProgress,
@@ -129,6 +130,25 @@ private fun InputSettings(navController: NavController) {
                 Text(text = stringResource(id = R.string.settings_description_gamepad_settings))
             },
             onClick = { navController.navigateToRoute(MainRoute.SETTINGS_INPUT_DEVICES) },
+        )
+    }
+}
+
+@Composable
+private fun AppearanceSettings() {
+    LemuroidCardSettingsGroup(
+        title = { Text(text = stringResource(id = R.string.settings_category_appearance)) },
+    ) {
+        LemuroidSettingsList(
+            state =
+                indexPreferenceState(
+                    R.string.pref_key_theme_mode,
+                    "system",
+                    stringListResource(R.array.pref_key_theme_mode_values).toList(),
+                ),
+            title = { Text(text = stringResource(id = R.string.settings_title_theme_mode)) },
+            subtitle = { Text(text = stringResource(id = R.string.settings_description_theme_mode)) },
+            items = stringListResource(R.array.pref_key_theme_mode_display_names),
         )
     }
 }

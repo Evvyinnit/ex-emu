@@ -12,7 +12,9 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppTheme
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppThemePreferences
 import com.swordfish.lemuroid.app.shared.input.InputBindingUpdater
 import com.swordfish.lemuroid.app.shared.input.InputDeviceManager
 import com.swordfish.lemuroid.lib.android.RetrogradeActivity
@@ -31,7 +33,8 @@ class GamePadBindingActivity : RetrogradeActivity() {
         inputBindingUpdater = InputBindingUpdater(inputDeviceManager, intent)
 
         setContent {
-            AppTheme {
+            val context = LocalContext.current
+            AppTheme(darkTheme = AppThemePreferences.isDarkTheme(context)) {
                 val focusRequester = remember { FocusRequester() }
 
                 AlertDialog(

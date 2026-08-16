@@ -9,7 +9,9 @@ import com.swordfish.lemuroid.app.mobile.feature.gamemenu.GameMenuActivity
 import com.swordfish.lemuroid.app.shared.gamemenu.GameMenuHelper
 import com.swordfish.lemuroid.lib.saves.StatesManager
 import com.swordfish.lemuroid.lib.saves.StatesPreviewManager
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class GameMenuStatesViewModel(
     private val application: Application,
@@ -73,4 +75,5 @@ class GameMenuStatesViewModel(
 
             emit(State(entries))
         }
+            .flowOn(Dispatchers.IO)
 }

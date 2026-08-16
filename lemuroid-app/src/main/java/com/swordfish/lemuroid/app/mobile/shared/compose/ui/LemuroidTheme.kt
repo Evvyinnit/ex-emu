@@ -1,13 +1,22 @@
 package com.swordfish.lemuroid.app.mobile.shared.compose.ui
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.swordfish.lemuroid.lib.preferences.SharedPreferencesHelper
 
 private val LightColorScheme =
     lightColorScheme(
@@ -75,21 +84,66 @@ private val DarkColorScheme =
         scrim = md_theme_dark_scrim,
     )
 
+/**
+ * Theme preference. Stored as a plain string in the legacy SharedPreferences so it
+ * can be read synchronously before the first frame is drawn.
+ */
+object AppThemePreferences {
+    const val THEME_MODE_PREF_KEY = "theme_mode"
+    const val THEME_MODE_SYSTEM = "system"
+    const val THEME_MODE_LIGHT = "light"
+    const val THEME_MODE_DARK = "dark"
+
+    fun themeMode(context: Context): String =
+        SharedPreferencesHelper.getSharedPreferences(context)
+            .getString(THEME_MODE_PREF_KEY, THEME_MODE_SYSTEM)
+            ?: THEME_MODE_SYSTEM
+
+    fun isDarkTheme(context: Context): Boolean =
+        when (themeMode(context)) {
+            THEME_MODE_LIGHT -> false
+            THEME_MODE_DARK -> true
+            else ->
+                (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                    Configuration.UI_MODE_NIGHT_YES
+        }
+}
+
+private val LemuroidTypography =
+    Typography(
+        displaySmall = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 36.sp, lineHeight = 44.sp, letterSpacing = 0.sp),
+        headlineMedium = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 28.sp, lineHeight = 36.sp, letterSpacing = 0.sp),
+        titleLarge = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 22.sp, lineHeight = 28.sp, letterSpacing = 0.sp),
+        titleMedium = TextStyle(fontWeight = FontWeight.Medium, fontSize = 16.sp, lineHeight = 24.sp, letterSpacing = 0.15.sp),
+        titleSmall = TextStyle(fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp),
+        bodyLarge = TextStyle(fontWeight = FontWeight.Normal, fontSize = 16.sp, lineHeight = 24.sp, letterSpacing = 0.5.sp),
+        bodyMedium = TextStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.25.sp),
+        bodySmall = TextStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.4.sp),
+        labelLarge = TextStyle(fontWeight = FontWeight.Medium, fontSize = 14.sp, lineHeight = 20.sp, letterSpacing = 0.1.sp),
+        labelMedium = TextStyle(fontWeight = FontWeight.Medium, fontSize = 12.sp, lineHeight = 16.sp, letterSpacing = 0.5.sp),
+        labelSmall = TextStyle(fontWeight = FontWeight.Medium, fontSize = 11.sp, lineHeight = 16.sp, letterSpacing = 0.5.sp),
+    )
+
 @Composable
 fun AppTheme(
-    darkTheme: Boolean = true,
+    darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
+    val context = LocalContext.current
     val dynamicColor = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     val colors =
-        when {
-            dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
-            dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
-            darkTheme -> DarkColorScheme
-            else -> LightColorScheme
+        remember(context, darkTheme, dynamicColor) {
+            when {
+                dynamicColor && darkTheme -> dynamicDarkColorScheme(context)
+                dynamicColor && !darkTheme -> dynamicLightColorScheme(context)
+                darkTheme -> DarkColorScheme
+                else -> LightColorScheme
+            }
         }
 
-    MaterialTheme(colorScheme = colors) {
-        content()
-    }
+    MaterialTheme(
+        colorScheme = colors,
+        typography = LemuroidTypography,
+        content = content,
+    )
 }

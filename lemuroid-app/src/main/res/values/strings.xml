@@ -24,8 +24,16 @@
     <string name="game_page_search_suggestion">Search games</string>
 
     <string name="settings_category_general">General</string>
+    <string name="settings_category_appearance">Appearance</string>
     <string name="settings_category_input">Input</string>
     <string name="settings_category_misc">Miscellaneous</string>
+    <string name="settings_title_theme_mode">Theme</string>
+    <string name="settings_description_theme_mode">Follow the system theme or force light/dark</string>
+    <string name="theme_mode_names_system">System default</string>
+    <string name="theme_mode_names_light">Light</string>
+    <string name="theme_mode_names_dark">Dark</string>
+    <string name="error_loading_games">Failed to load games</string>
+    <string name="retry">Retry</string>
     <string name="settings_title_enable_autosave">Autosave state</string>
     <string name="settings_description_enable_autosave">Save state when exiting via game menu</string>
     <string name="settings_title_enable_touch_feedback">Vibrate on touch</string>

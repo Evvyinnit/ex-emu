@@ -10,12 +10,14 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import com.swordfish.lemuroid.app.mobile.feature.game.GameActivity
 import com.swordfish.lemuroid.app.mobile.feature.game.GameService
 import com.swordfish.lemuroid.app.mobile.feature.settings.SettingsManager
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppTheme
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.AppThemePreferences
 import com.swordfish.lemuroid.app.shared.GameMenuContract
 import com.swordfish.lemuroid.app.shared.ImmersiveActivity
 import com.swordfish.lemuroid.app.shared.coreoptions.CoreOption
@@ -120,7 +122,8 @@ abstract class BaseGameActivity : ImmersiveActivity() {
         lifecycle.addObserver(baseGameScreenViewModel)
 
         setContent {
-            AppTheme {
+            val context = LocalContext.current
+            AppTheme(darkTheme = AppThemePreferences.isDarkTheme(context)) {
                 BaseGameScreen(viewModel = baseGameScreenViewModel) {
                     GameScreen(viewModel)
                 }

@@ -37,6 +37,7 @@ fun LemuroidGameImage(
                 .aspectRatio(1.0f),
         fallback = fallbackPainter,
         error = fallbackPainter,
+        crossfade = false,
         contentScale = ContentScale.Crop,
     )
 }

@@ -2,15 +2,28 @@ package com.swordfish.lemuroid.app.mobile.feature.favorites
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidEmptyView
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidErrorView
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidGameCard
 import com.swordfish.lemuroid.lib.library.db.entity.Game
 
@@ -23,27 +36,72 @@ fun FavoritesScreen(
     onGameLongClick: (Game) -> Unit,
 ) {
     val games = viewModel.favorites.collectAsLazyPagingItems()
+    val refreshState = games.loadState.refresh
 
-    if (games.itemCount == 0) {
-        LemuroidEmptyView()
-        return
-    }
-
-    LazyVerticalGrid(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(16.dp),
-        columns = GridCells.Adaptive(144.dp),
-        horizontalArrangement = Arrangement.spacedBy(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
-    ) {
-        items(games.itemCount, key = { games[it]?.id ?: it }) { index ->
-            val game = games[index] ?: return@items
-            LemuroidGameCard(
-                modifier = Modifier.animateItem(),
-                game = game,
-                onClick = { onGameClick(game) },
-                onLongClick = { onGameLongClick(game) },
-            )
+    Box(modifier = modifier.fillMaxSize()) {
+        when {
+            refreshState is LoadState.Error && games.itemCount == 0 -> {
+                LemuroidErrorView(
+                    modifier = Modifier.align(Alignment.Center),
+                    onRetry = { games.retry() },
+                )
+            }
+            refreshState is LoadState.Loading && games.itemCount == 0 -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            games.itemCount == 0 -> {
+                LemuroidEmptyView()
+            }
+            else -> {
+                LazyVerticalGrid(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(16.dp),
+                    columns = GridCells.Adaptive(144.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                ) {
+                    items(games.itemCount, key = { games[it]?.id ?: it }) { index ->
+                        val game = games[index] ?: return@items
+                        LemuroidGameCard(
+                            modifier = Modifier.animateItem(),
+                            game = game,
+                            onClick = { onGameClick(game) },
+                            onLongClick = { onGameLongClick(game) },
+                        )
+                    }
+                    when (val appendState = games.loadState.append) {
+                        is LoadState.Error -> {
+                            item(key = "append-error", span = { GridItemSpan(maxLineSpan) }) {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    TextButton(onClick = { games.retry() }) {
+                                        Text(stringResource(id = R.string.retry))
+                                    }
+                                }
+                            }
+                        }
+                        is LoadState.Loading -> {
+                            item(key = "append-loading", span = { GridItemSpan(maxLineSpan) }) {
+                                Box(
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(16.dp),
+                                    contentAlignment = Alignment.Center,
+                                ) {
+                                    CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                }
+                            }
+                        }
+                        else -> Unit
+                    }
+                }
+            }
         }
     }
 }

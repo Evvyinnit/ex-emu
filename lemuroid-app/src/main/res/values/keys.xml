@@ -20,6 +20,7 @@
     <string name="pref_key_max_cache_size" translatable="false">max_cache_size_bytes</string>
     <string name="pref_key_allow_direct_game_load" translatable="false">allow_direct_game_load</string>
     <string name="pref_key_enable_immersive_mode" translatable="false">enable_immersive_mode</string>
+    <string name="pref_key_theme_mode" translatable="false">theme_mode</string>
 
     <string name="pref_key_save_sync_auto" translatable="false">save_sync_auto</string>
     <string name="pref_key_save_sync_enable" translatable="false">save_sync_enable</string>
@@ -55,5 +56,17 @@
         <item>@string/shader_filter_names_smooth</item>
         <item>@string/shader_filter_names_crt</item>
         <item>@string/shader_filter_names_lcd</item>
+    </string-array>
+
+    <string-array translatable="false" name="pref_key_theme_mode_values">
+        <item>system</item>
+        <item>light</item>
+        <item>dark</item>
+    </string-array>
+
+    <string-array translatable="false" name="pref_key_theme_mode_display_names">
+        <item>@string/theme_mode_names_system</item>
+        <item>@string/theme_mode_names_light</item>
+        <item>@string/theme_mode_names_dark</item>
     </string-array>
 </resources>
