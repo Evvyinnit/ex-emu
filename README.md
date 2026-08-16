@@ -21,6 +21,27 @@ device — the APK stays small.
 
 Ex Emu is developed by **Evvyinnit**.
 
+## Credits
+
+Ex Emu stands on the shoulders of many great open-source projects:
+
+- **[Lemuroid](https://github.com/Swordfish90/Lemuroid)** by **Swordfish90** —
+  the app is a fork of Lemuroid; its libretro integration, library, and
+  architecture are inherited from it
+- **[NeoStation](https://github.com/misobadev/neostation-frontend)** by
+  **misobadev** — the UI design ported in v2.2.0 is inspired by NeoStation's
+  visual language (colors, shapes, typography)
+- **[libretro](https://www.libretro.com/)** and the authors of all emulation
+  cores (mGBA, melonDS, mupen64plus, Snes9x, FCEUmm, PPSSPP, PCSX ReARMed,
+  Play!, Citra, DosBox Pure, FBNeo, MAME, …)
+- **[J2ME Loader](https://github.com/nikita36078/J2ME-Loader)** by
+  **nikita36078** — the embedded J2ME engine (Apache License 2.0)
+- **[Mascot Capsule](https://github.com/nikita36078/MascotCapsule)** — Mascot
+  Capsule 3D rendering support
+- **[Material Design Icons](https://material.io/resources/icons/)** by Google
+
+Special thanks to the open-source community that makes projects like this possible.
+
 ## Getting the APK
 
 Every push to `main` automatically builds a signed release APK in
