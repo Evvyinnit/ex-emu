@@ -20,7 +20,6 @@
     <string name="save_sync">Save Sync</string>
     <string name="show_all">Show All</string>
     <string name="back">Back</string>
-    <string name="close">Close</string>
 
     <string name="game_page_search_suggestion">Search games</string>
 
@@ -80,7 +79,6 @@
     <string name="ra_recently_played">Recently played</string>
     <string name="ra_points">%1$d points</string>
     <string name="ra_dashboard_error">Could not load your profile — check your RetroAchievements settings</string>
-    <string name="game_details_achievements">Achievements</string>
     <string name="game_details_achievements_none">No achievements earned yet</string>
     <string name="game_details_achievements_error">Could not load achievements — check your RetroAchievements settings</string>
 
