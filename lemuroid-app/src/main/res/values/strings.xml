@@ -70,7 +70,6 @@
     <string name="settings_scrape_progress">Scraped %1$d of %2$d games</string>
     <string name="settings_scrape_done">Done: %1$d games updated</string>
     <string name="settings_scrape_error">Scraping failed — check your credentials and try again</string>
-    <string name="game_details_scrape">Scrape metadata</string>
     <string name="game_details_scrape_error">Could not scrape this game — check credentials in Settings</string>
     <string name="settings_category_achievements">RetroAchievements</string>
     <string name="settings_title_ra_username">Username</string>
