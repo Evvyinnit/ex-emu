@@ -112,6 +112,12 @@ enum class MainRoute(
         parent = SETTINGS,
         showBottomNavigation = false,
     ),
+    SETTINGS_RA_DASHBOARD(
+        route = "settings/radashboard",
+        titleId = R.string.settings_ra_dashboard,
+        parent = SETTINGS,
+        showBottomNavigation = false,
+    ),
     ;
 
     val root = root()

@@ -53,6 +53,8 @@ import com.swordfish.lemuroid.app.mobile.feature.settings.hiddengames.HiddenGame
 import com.swordfish.lemuroid.app.mobile.feature.settings.hiddengames.HiddenGamesViewModel
 import com.swordfish.lemuroid.app.mobile.feature.settings.inputdevices.InputDevicesSettingsScreen
 import com.swordfish.lemuroid.app.mobile.feature.settings.inputdevices.InputDevicesSettingsViewModel
+import com.swordfish.lemuroid.app.mobile.feature.settings.radashboard.RADashboardScreen
+import com.swordfish.lemuroid.app.mobile.feature.settings.radashboard.RADashboardViewModel
 import com.swordfish.lemuroid.app.mobile.feature.settings.savesync.SaveSyncSettingsScreen
 import com.swordfish.lemuroid.app.mobile.feature.settings.savesync.SaveSyncSettingsViewModel
 import com.swordfish.lemuroid.app.mobile.feature.setup.SetupScreen
@@ -409,6 +411,15 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                             viewModel =
                                 viewModel(
                                     factory = HiddenGamesViewModel.Factory(retrogradeDb),
+                                ),
+                        )
+                    }
+                    composable(MainRoute.SETTINGS_RA_DASHBOARD) {
+                        RADashboardScreen(
+                            modifier = Modifier.padding(padding),
+                            viewModel =
+                                viewModel(
+                                    factory = RADashboardViewModel.Factory(applicationContext),
                                 ),
                         )
                     }

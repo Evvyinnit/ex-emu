@@ -9,16 +9,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Download
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -193,17 +199,46 @@ fun GameDetailsScreen(
                     color = MaterialTheme.colorScheme.error,
                 )
             }
-            OutlinedButton(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                enabled = !isScraping,
-                onClick = { viewModel.onScrapeMetadata(currentGame) },
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                Icon(
-                    imageVector = Icons.Default.Download,
-                    contentDescription = null,
+                OutlinedButton(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                    enabled = !isScraping,
+                    onClick = { viewModel.onScrapeMetadata(currentGame) },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Download,
+                        contentDescription = null,
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = stringResource(R.string.game_details_scrape))
+                }
+                OutlinedButton(
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(48.dp),
+                    onClick = { viewModel.onOpenAchievements(currentGame) },
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.EmojiEvents,
+                        contentDescription = null,
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(text = stringResource(R.string.game_details_achievements))
+                }
+            }
+            val achievementsState by viewModel.achievementsState.collectAsState()
+            if (achievementsState !is GameDetailsViewModel.AchievementsState.Idle) {
+                AchievementsDialog(
+                    state = achievementsState,
+                    onDismiss = { viewModel.resetAchievements() },
                 )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(text = stringResource(R.string.game_details_scrape))
             }
             val screenshotUrl = currentGame.screenshotUrl
             if (!screenshotUrl.isNullOrBlank()) {
@@ -279,5 +314,98 @@ fun GameDetailsScreen(
                 }
             },
         )
+    }
+}
+
+@Composable
+private fun AchievementsDialog(
+    state: GameDetailsViewModel.AchievementsState,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(R.string.game_details_achievements)) },
+        text = {
+            when (state) {
+                is GameDetailsViewModel.AchievementsState.Idle -> Unit
+                is GameDetailsViewModel.AchievementsState.Loading -> {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                is GameDetailsViewModel.AchievementsState.Error -> {
+                    Text(text = stringResource(R.string.game_details_achievements_error))
+                }
+                is GameDetailsViewModel.AchievementsState.Success -> {
+                    if (state.achievements.achievements.isEmpty()) {
+                        Text(text = stringResource(R.string.game_details_achievements_none))
+                    } else {
+                        LazyColumn(modifier = Modifier.fillMaxWidth()) {
+                            items(state.achievements.achievements, key = { it.title }) { achievement ->
+                                AchievementRow(achievement = achievement)
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) {
+                Text(text = stringResource(R.string.close))
+            }
+        },
+    )
+}
+
+@Composable
+private fun AchievementRow(achievement: com.swordfish.lemuroid.app.shared.metadata.RaAchievement) {
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector =
+                    if (achievement.earned) {
+                        Icons.Default.CheckCircle
+                    } else {
+                        Icons.Default.RadioButtonUnchecked
+                    },
+                contentDescription = null,
+                tint =
+                    if (achievement.earned) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = achievement.title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color =
+                        if (achievement.earned) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        },
+                )
+                Text(
+                    text = achievement.description,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Text(
+                text = achievement.points.toString(),
+                style = MaterialTheme.typography.labelLarge,
+            )
+        }
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
     }
 }

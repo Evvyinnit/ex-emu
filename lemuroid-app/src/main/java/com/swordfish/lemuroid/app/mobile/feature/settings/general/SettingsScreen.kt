@@ -68,6 +68,7 @@ fun SettingsScreen(
         GeneralSettings()
         AppearanceSettings()
         MetadataSettings(viewModel = viewModel)
+        RetroAchievementsSettings(navController = navController)
         InputSettings(navController = navController)
         MiscSettings(
             indexingInProgress = indexingInProgress,
@@ -248,6 +249,48 @@ private fun MetadataTextField(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 4.dp),
     )
+}
+
+@Composable
+private fun RetroAchievementsSettings(navController: NavController) {
+    val context = LocalContext.current
+    val prefs = remember {
+        SharedPreferencesHelper.getSharedPreferences(context)
+    }
+    val usernameKey = stringResource(R.string.pref_key_ra_username)
+    val apiKeyKey = stringResource(R.string.pref_key_ra_api_key)
+
+    var username by remember { mutableStateOf(prefs.getString(usernameKey, "") ?: "") }
+    var apiKey by remember { mutableStateOf(prefs.getString(apiKeyKey, "") ?: "") }
+
+    LemuroidCardSettingsGroup(
+        title = { Text(text = stringResource(id = R.string.settings_category_achievements)) },
+    ) {
+        MetadataTextField(
+            label = stringResource(R.string.settings_title_ra_username),
+            value = username,
+            onValueChange = {
+                username = it
+                prefs.edit().putString(usernameKey, it).apply()
+            },
+        )
+        MetadataTextField(
+            label = stringResource(R.string.settings_title_ra_api_key),
+            value = apiKey,
+            isPassword = true,
+            onValueChange = {
+                apiKey = it
+                prefs.edit().putString(apiKeyKey, it).apply()
+            },
+        )
+        LemuroidSettingsMenuLink(
+            title = { Text(text = stringResource(id = R.string.settings_ra_dashboard)) },
+            subtitle = {
+                Text(text = stringResource(id = R.string.settings_description_ra_dashboard))
+            },
+            onClick = { navController.navigateToRoute(MainRoute.SETTINGS_RA_DASHBOARD) },
+        )
+    }
 }
 
 @Composable

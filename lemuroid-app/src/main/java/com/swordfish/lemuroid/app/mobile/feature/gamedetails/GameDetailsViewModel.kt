@@ -7,6 +7,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.swordfish.lemuroid.R
+import com.swordfish.lemuroid.app.shared.metadata.Md5Hasher
+import com.swordfish.lemuroid.app.shared.metadata.RaAchievement
+import com.swordfish.lemuroid.app.shared.metadata.RaCredentials
+import com.swordfish.lemuroid.app.shared.metadata.RaGameAchievements
+import com.swordfish.lemuroid.app.shared.metadata.RetroAchievementsService
 import com.swordfish.lemuroid.app.shared.metadata.ScraperCredentials
 import com.swordfish.lemuroid.app.shared.metadata.ScreenScraperService
 import com.swordfish.lemuroid.lib.library.GameSystem
@@ -72,6 +77,55 @@ class GameDetailsViewModel(
             devPassword = prefs.getString(applicationContext.getString(R.string.pref_key_scraper_devpassword), "") ?: "",
             username = prefs.getString(applicationContext.getString(R.string.pref_key_scraper_username), "") ?: "",
             password = prefs.getString(applicationContext.getString(R.string.pref_key_scraper_password), "") ?: "",
+        )
+    }
+
+    private val achievementsService = RetroAchievementsService()
+
+    sealed class AchievementsState {
+        data object Idle : AchievementsState()
+
+        data object Loading : AchievementsState()
+
+        data class Success(val achievements: RaGameAchievements) : AchievementsState()
+
+        data object Error : AchievementsState()
+    }
+
+    val achievementsState: StateFlow<AchievementsState> = MutableStateFlow(AchievementsState.Idle)
+
+    fun onOpenAchievements(game: Game) {
+        if (achievementsState.value is AchievementsState.Loading) {
+            return
+        }
+        viewModelScope.launch {
+            achievementsState.value = AchievementsState.Loading
+            val credentials = raCredentials()
+            val md5 = Md5Hasher.md5(applicationContext, Uri.parse(game.fileUri))
+            val result =
+                if (credentials.isConfigured && md5 != null) {
+                    achievementsService.fetchGameAchievements(credentials, md5)
+                } else {
+                    null
+                }
+            achievementsState.value =
+                if (result != null) {
+                    AchievementsState.Success(result)
+                } else {
+                    AchievementsState.Error
+                }
+        }
+    }
+
+    fun resetAchievements() {
+        achievementsState.value = AchievementsState.Idle
+    }
+
+    private fun raCredentials(): RaCredentials {
+        val prefs = SharedPreferencesHelper.getSharedPreferences(applicationContext)
+        return RaCredentials(
+            username = prefs.getString(applicationContext.getString(R.string.pref_key_ra_username), "") ?: "",
+            apiKey = prefs.getString(applicationContext.getString(R.string.pref_key_ra_api_key), "") ?: "",
         )
     }
 
