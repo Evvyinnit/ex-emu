@@ -42,7 +42,6 @@ fun LemuroidSmallGameImage(
                 .background(MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)),
         fallback = fallbackPainter,
         error = fallbackPainter,
-        crossfade = false,
         contentScale = ContentScale.Crop,
     )
 }
