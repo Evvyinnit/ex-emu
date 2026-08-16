@@ -3,13 +3,7 @@ plugins {
 }
 
 android {
-    compileSdk COMPILE_SDK
     namespace 'com.android.dx'
-
-    defaultConfig {
-        minSdk MIN_SDK
-        targetSdk TARGET_SDK
-    }
 
     buildTypes {
         release {

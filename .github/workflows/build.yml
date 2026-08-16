@@ -1,4 +1,4 @@
-name: Build Exj2 APK
+name: Build Ex Emu APK
 
 on:
   push:
@@ -14,15 +14,15 @@ concurrency:
 
 env:
   NDK_VERSION: 23.0.7599858
-  COMPILE_SDK: 34
+  COMPILE_SDK: 35
   BUILD_TOOLS: 34.0.0
-  APK_BASE: Exj2-1.8.2-open-release
+  APK_BASE: ExEmu-2.0.0-release
 
 jobs:
   build:
     name: Build signed release APK
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -70,39 +70,29 @@ jobs:
           EOF
           ls -la exj2-release.jks keystore.properties
 
-      - name: Build signed release APK
-        if: steps.signing.outputs.has_keystore == 'true'
+      - name: Build release APK
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
           set -o pipefail
-          ./gradlew --no-daemon assembleOpenRelease 2>&1 | tail -n 100
-
-      - name: Build debug APK (fallback, unsigned setup)
-        if: steps.signing.outputs.has_keystore == 'false'
-        run: |
-          set -o pipefail
-          ./gradlew --no-daemon assembleOpenDebug 2>&1 | tail -n 100
+          ./gradlew --no-daemon assembleRelease 2>&1 | tail -n 150
 
       - name: Verify APK exists
         run: |
-          ls -la app/build/outputs/apk/open/release/ app/build/outputs/apk/open/debug/ 2>/dev/null || true
-          find app/build/outputs/apk -name '*.apk' -exec ls -la {} \;
+          ls -la lemuroid-app/build/outputs/apk/release/ lemuroid-app/build/outputs/apk/debug/ 2>/dev/null || true
+          find lemuroid-app/build/outputs/apk -name '*.apk' -exec ls -la {} \;
 
-      - name: Upload signed release APK
-        if: steps.signing.outputs.has_keystore == 'true'
+      - name: Rename APK
+        run: |
+          cd lemuroid-app/build/outputs/apk/release
+          if [ -f lemuroid-app-release.apk ]; then mv lemuroid-app-release.apk ${{ env.APK_BASE }}.apk; fi
+          ls -la
+
+      - name: Upload release APK
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APK_BASE }}
-          path: app/build/outputs/apk/open/release/*.apk
-          if-no-files-found: error
-
-      - name: Upload debug APK
-        if: steps.signing.outputs.has_keystore == 'false'
-        uses: actions/upload-artifact@v4
-        with:
-          name: Exj2-debug
-          path: app/build/outputs/apk/open/debug/*.apk
+          path: lemuroid-app/build/outputs/apk/release/*.apk
           if-no-files-found: error
 
   smoke-test:
@@ -124,7 +114,7 @@ jobs:
       - name: Download APK
         uses: actions/download-artifact@v4
         with:
-          pattern: Exj2-*
+          pattern: ExEmu-*
           merge-multiple: true
           path: apk
 
@@ -157,7 +147,7 @@ jobs:
       - name: Download APK
         uses: actions/download-artifact@v4
         with:
-          pattern: Exj2-*
+          pattern: ExEmu-*
           merge-multiple: true
           path: apk
 

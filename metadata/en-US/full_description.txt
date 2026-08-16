@@ -1,4 +1,7 @@
-Exj2 is a J2ME (Java ME) games emulator for Android. It supports most 2D and 3D games (including Mascot Capsule 3D ones).
-Exj2 has a virtual keyboard, individual settings for each application, and scaling support.
+Ex Emu is a fully working all-in-one game emulator for Android.
+
+- Java (J2ME) games: load .jar/.jad files, virtual keyboard, per-game key mapping and scaling, saves, Mascot Capsule 3D support
+- 30+ console systems via libretro cores: NES, SNES, GB/GBC/GBA, NDS, 3DS, N64, Genesis, Master System, Game Gear, Sega CD, PS1, PSP, PS2, FBNeo, MAME, Atari 2600/7800/Lynx, PC Engine, Neo Geo, DOS and more
+- Cores are downloaded on demand and cached on your device
 
 Developed by Evvyinnit.

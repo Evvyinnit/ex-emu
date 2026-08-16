@@ -1,1 +1,1 @@
-A Java (J2ME) games emulator for Android.
+All-in-one game emulator: Java (J2ME) games plus 30+ classic consoles (NES, SNES, GBA, NDS, N64, PS1, PSP, PS2, Genesis, arcade and more).

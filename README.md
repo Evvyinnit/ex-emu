@@ -1,35 +1,46 @@
-# Exj2 — Java Games Emulator for Android
+# Ex Emu — Multi-System Emulator for Android
 
-[![Build](https://github.com/Evvyinnit/exj2/actions/workflows/build.yml/badge.svg)](https://github.com/Evvyinnit/exj2/actions/workflows/build.yml)
+[![Build](https://github.com/Evvyinnit/ex-emu/actions/workflows/build.yml/badge.svg)](https://github.com/Evvyinnit/ex-emu/actions/workflows/build.yml)
 
-**Exj2** is a fully working J2ME (Java ME) games emulator for Android — plays most
-2D and 3D Java games, including Mascot Capsule 3D ones.
+**Ex Emu** is a fully working, all-in-one game emulator for Android. It plays
+classic **Java (J2ME)** mobile games plus **30+ console and handheld systems** —
+Nintendo (NES, SNES, GB/GBC/GBA, NDS, 3DS, N64), Sega (Genesis, Master System,
+Game Gear, Sega CD), Sony (PS1, PSP, PS2), arcade (FBNeo, MAME), Atari
+(2600/7800/Lynx), PC Engine, Neo Geo, Virtual Boy, DOS and more.
 
-- Virtual keyboard, individual per-game settings, scaling support
-- Android 4.0+
+Emulation cores are downloaded on demand from the internet and cached on your
+device — the APK stays small.
+
+- **Java (J2ME) games**: load `.jar`/`.jad` files, per-game keyboard mapping,
+  scaling, virtual keyboard, saves, Mascot Capsule 3D support
+- **Consoles**: libretro cores (mGBA, melonDS, mupen64plus, Snes9x, FCEUmm,
+  PPSSPP, PCSX ReARMed, Play!, Citra, DosBox Pure, …)
+- Android 6.0+
 
 ## Developer
 
-Exj2 is developed by **Evvyinnit**.
+Ex Emu is developed by **Evvyinnit**.
 
 ## Getting the APK
 
-The latest signed release APK is published on the [Releases](https://github.com/Evvyinnit/exj2/releases)
+The latest signed release APK is published on the [Releases](https://github.com/Evvyinnit/ex-emu/releases)
 page — download and install it on your phone. Pushing a `v*` tag (e.g.
-`git tag v1.0.0 && git push origin v1.0.0`) publishes a new signed release.
+`git tag v2.0.0 && git push origin v2.0.0`) publishes a new signed release
+automatically.
 
 ## Building locally
 
-Requirements: JDK 17+, Android SDK (platform 34, build-tools 34.0.0, NDK 23.0.7599858).
+Requirements: JDK 17+, Android SDK (platform 35, build-tools 34.0.0, NDK 23.0.7599858).
 
 ```bash
-./gradlew assembleOpenDebug          # debug APK, no signing needed
-./gradlew assembleOpenRelease        # release APK (requires keystore.properties)
+./gradlew assembleDebug          # debug APK, no signing needed
+./gradlew assembleRelease        # release APK (requires keystore.properties)
 ```
 
 Release signing reads `keystore.properties` (`keyAlias`, `keyPassword`, `storeFile`,
-`storePassword`).
+`storePassword`); without it the release build is signed with the debug keystore.
 
 ## License
 
-Licensed under the Apache License 2.0. See [LICENSE](LICENSE).
+- App and libraries: GPL-3.0, see [COPYING](COPYING)
+- J2ME emulation engine: Apache License 2.0, see [LICENSE](LICENSE)
