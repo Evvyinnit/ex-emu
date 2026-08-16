@@ -23,6 +23,35 @@
 
     <string name="game_page_search_suggestion">Search games</string>
 
+    <string name="title_game_details">Game details</string>
+    <string name="game_details_play">Play</string>
+    <string name="game_details_played_hours_minutes">Played %1$d h %2$d m</string>
+    <string name="game_details_played_hours">Played %1$d h</string>
+    <string name="game_details_played_minutes">Played %1$d m</string>
+    <string name="game_details_core_override">Emulation core</string>
+    <string name="game_details_core_override_subtitle">Select a core for this game</string>
+    <string name="game_details_core_system_default">System default</string>
+    <string name="game_details_hide">Hide game</string>
+    <string name="game_details_unhide">Unhide game</string>
+    <string name="game_details_delete">Delete game</string>
+    <string name="game_details_delete_confirm_title">Delete game?</string>
+    <string name="game_details_delete_confirm_message">This will permanently delete the game file from your device.</string>
+    <string name="game_details_delete_success">Game deleted</string>
+    <string name="game_details_hidden_title">Hidden games</string>
+    <string name="game_details_hidden_empty">No hidden games</string>
+    <string name="game_details_random">Random game</string>
+    <string name="game_details_random_reroll">Shuffle</string>
+    <string name="game_details_scrape">Scrape metadata</string>
+    <string name="game_details_achievements">Achievements</string>
+    <string name="game_details_metadata_empty">No metadata yet</string>
+    <string name="games_sort_title">Title</string>
+    <string name="games_sort_recent">Recently played</string>
+    <string name="games_view_list">List</string>
+    <string name="games_view_grid">Grid</string>
+    <string name="games_view_carousel">Carousel</string>
+    <string name="games_letter_all">All</string>
+    <string name="title_sort">Sort</string>
+
     <string name="settings_category_general">General</string>
     <string name="settings_category_appearance">Appearance</string>
     <string name="settings_category_input">Input</string>

@@ -33,6 +33,8 @@ import com.fredporciuncula.flow.preferences.FlowSharedPreferences
 import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.feature.favorites.FavoritesScreen
 import com.swordfish.lemuroid.app.mobile.feature.favorites.FavoritesViewModel
+import com.swordfish.lemuroid.app.mobile.feature.gamedetails.GameDetailsScreen
+import com.swordfish.lemuroid.app.mobile.feature.gamedetails.GameDetailsViewModel
 import com.swordfish.lemuroid.app.mobile.feature.games.GamesScreen
 import com.swordfish.lemuroid.app.mobile.feature.games.GamesViewModel
 import com.swordfish.lemuroid.app.mobile.feature.home.HomeScreen
@@ -173,7 +175,7 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
             }
 
             val onGameClick = { game: Game ->
-                gameInteractor.onGamePlay(game)
+                navController.navigate("game/${game.id}")
             }
 
             val onGameFavoriteToggle = { game: Game, isFavorite: Boolean ->
@@ -271,12 +273,30 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                                     factory =
                                         GamesViewModel.Factory(
                                             retrogradeDb,
+                                            applicationContext,
                                             MetaSystemID.valueOf(metaSystemId!!),
                                         ),
                                 ),
                             onGameClick = onGameClick,
                             onGameLongClick = onGameLongClick,
                             onGameFavoriteToggle = onGameFavoriteToggle,
+                        )
+                    }
+                    composable(MainRoute.GAME_DETAILS) { entry ->
+                        val gameId = entry.arguments?.getInt("gameId")!!
+                        GameDetailsScreen(
+                            modifier = Modifier.padding(padding),
+                            viewModel =
+                                viewModel(
+                                    factory =
+                                        GameDetailsViewModel.Factory(
+                                            retrogradeDb,
+                                            applicationContext,
+                                            gameId,
+                                        ),
+                                ),
+                            onGamePlay = { gameInteractor.onGamePlay(it) },
+                            onBack = { navController.popBackStack() },
                         )
                     }
                     composable(MainRoute.SETTINGS) {

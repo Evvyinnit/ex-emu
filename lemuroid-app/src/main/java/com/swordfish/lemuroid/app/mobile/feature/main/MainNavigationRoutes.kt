@@ -62,6 +62,15 @@ enum class MainRoute(
         parent = SYSTEMS,
         listOf(navArgument("metaSystemId") { type = NavType.StringType }),
     ),
+    GAME_DETAILS(
+        route = "game/{gameId}",
+        titleId = R.string.title_game_details,
+        showBottomNavigation = false,
+        arguments =
+            listOf(
+                navArgument("gameId") { type = NavType.IntType },
+            ),
+    ),
     SETTINGS(
         route = "settings/home",
         titleId = R.string.title_settings,

@@ -33,6 +33,9 @@ interface GameDao {
     @Query("SELECT * FROM games WHERE id = :id")
     suspend fun selectById(id: Int): Game?
 
+    @Query("SELECT * FROM games WHERE id = :id")
+    fun selectGame(id: Int): Flow<Game?>
+
     @Query("SELECT * FROM games WHERE fileUri = :fileUri")
     fun selectByFileUri(fileUri: String): Game?
 
@@ -87,6 +90,14 @@ interface GameDao {
         """,
     )
     suspend fun selectRandomBySystem(systemId: String, limit: Int): List<Game>
+
+    @Query(
+        """
+        SELECT * FROM games WHERE systemId IN (:systemIds) AND isHidden = 0
+        ORDER BY RANDOM() LIMIT :limit
+        """,
+    )
+    suspend fun selectRandomBySystems(systemIds: List<String>, limit: Int): List<Game>
 
     @Query("SELECT * FROM games WHERE systemId IN (:systemIds) AND isHidden = 0 ORDER BY title ASC, id DESC")
     fun selectBySystems(systemIds: List<String>): PagingSource<Int, Game>

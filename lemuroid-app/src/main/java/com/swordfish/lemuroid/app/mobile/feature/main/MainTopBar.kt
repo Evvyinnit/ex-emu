@@ -99,7 +99,7 @@ fun LemuroidTopAppBar(
             ),
         navigationIcon = {
             AnimatedVisibility(
-                visible = route.parent != null,
+                visible = route.parent != null || route == MainRoute.GAME_DETAILS,
                 enter = fadeIn(),
                 exit = fadeOut(),
             ) {

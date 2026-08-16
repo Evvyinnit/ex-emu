@@ -29,7 +29,12 @@ class GameLauncher(
 
         GlobalScope.launch {
             val system = GameSystem.findById(game.systemId)
-            val coreConfig = coresSelection.getCoreConfigForSystem(system)
+            val coreConfig =
+                game.coreOverride
+                    ?.let { override ->
+                        system.systemCoreConfigs.firstOrNull { it.coreID.coreName == override }
+                    }
+                    ?: coresSelection.getCoreConfigForSystem(system)
             gameLaunchTaskHandler.handleGameStart(activity.applicationContext)
             BaseGameActivity.launchGame(activity, coreConfig, game, loadSave, leanback)
         }
