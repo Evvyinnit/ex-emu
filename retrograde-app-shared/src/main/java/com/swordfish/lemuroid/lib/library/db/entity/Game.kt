@@ -35,6 +35,7 @@ import java.io.Serializable
         Index("lastIndexedAt"),
         Index("lastPlayedAt"),
         Index("isFavorite"),
+        Index("isHidden"),
     ],
 )
 data class Game(
@@ -49,6 +50,14 @@ data class Game(
     val lastIndexedAt: Long,
     val lastPlayedAt: Long? = null,
     val isFavorite: Boolean = false,
+    val isHidden: Boolean = false,
+    val timePlayed: Long = 0,
+    val description: String? = null,
+    val genre: String? = null,
+    val year: String? = null,
+    val rating: String? = null,
+    val screenshotUrl: String? = null,
+    val coreOverride: String? = null,
 ) : Serializable {
     companion object {
         val DIFF_CALLBACK =

@@ -39,39 +39,69 @@ interface GameDao {
     @Query("SELECT * FROM games WHERE lastIndexedAt < :lastIndexedAt")
     fun selectByLastIndexedAtLessThan(lastIndexedAt: Long): List<Game>
 
-    @Query("SELECT * FROM games WHERE isFavorite = 1 ORDER BY title ASC")
+    @Query("SELECT * FROM games WHERE isFavorite = 1 AND isHidden = 0 ORDER BY title ASC")
     fun selectFavorites(): PagingSource<Int, Game>
 
     @Query(
         """
-        SELECT * FROM games WHERE lastPlayedAt IS NOT NULL AND isFavorite = 0 ORDER BY lastPlayedAt DESC LIMIT :limit
+        SELECT * FROM games WHERE lastPlayedAt IS NOT NULL AND isFavorite = 0 AND isHidden = 0 ORDER BY lastPlayedAt DESC LIMIT :limit
         """,
     )
     fun selectFirstUnfavoriteRecents(limit: Int): Flow<List<Game>>
 
-    @Query("SELECT * FROM games WHERE isFavorite = 1 ORDER BY lastPlayedAt DESC LIMIT :limit")
+    @Query("SELECT * FROM games WHERE isFavorite = 1 AND isHidden = 0 ORDER BY lastPlayedAt DESC LIMIT :limit")
     fun selectFirstFavoritesRecents(limit: Int): Flow<List<Game>>
 
-    @Query("SELECT * FROM games WHERE lastPlayedAt IS NOT NULL ORDER BY lastPlayedAt DESC LIMIT :limit")
+    @Query("SELECT * FROM games WHERE lastPlayedAt IS NOT NULL AND isHidden = 0 ORDER BY lastPlayedAt DESC LIMIT :limit")
     suspend fun asyncSelectFirstRecents(limit: Int): List<Game>
 
-    @Query("SELECT * FROM games WHERE isFavorite = 1 ORDER BY lastPlayedAt DESC LIMIT :limit")
+    @Query("SELECT * FROM games WHERE isFavorite = 1 AND isHidden = 0 ORDER BY lastPlayedAt DESC LIMIT :limit")
     fun selectFirstFavorites(limit: Int): Flow<List<Game>>
 
-    @Query("SELECT * FROM games WHERE lastPlayedAt IS NULL LIMIT :limit")
+    @Query("SELECT * FROM games WHERE lastPlayedAt IS NULL AND isHidden = 0 LIMIT :limit")
     fun selectFirstNotPlayed(limit: Int): Flow<List<Game>>
 
-    @Query("SELECT * FROM games WHERE systemId = :systemId ORDER BY title ASC, id DESC")
+    @Query("SELECT * FROM games WHERE systemId = :systemId AND isHidden = 0 ORDER BY title ASC, id DESC")
     fun selectBySystem(systemId: String): PagingSource<Int, Game>
 
-    @Query("SELECT * FROM games WHERE systemId IN (:systemIds) ORDER BY title ASC, id DESC")
+    @Query(
+        """
+        SELECT * FROM games WHERE systemId = :systemId AND isHidden = 0
+        ORDER BY (lastPlayedAt IS NULL), lastPlayedAt DESC, id DESC
+        """,
+    )
+    fun selectBySystemRecent(systemId: String): PagingSource<Int, Game>
+
+    @Query(
+        """
+        SELECT * FROM games WHERE systemId = :systemId AND isHidden = 0
+        AND title COLLATE NOCASE LIKE :pattern ORDER BY title ASC, id DESC
+        """,
+    )
+    fun selectBySystemPrefix(systemId: String, pattern: String): PagingSource<Int, Game>
+
+    @Query(
+        """
+        SELECT * FROM games WHERE systemId = :systemId AND isHidden = 0
+        ORDER BY RANDOM() LIMIT :limit
+        """,
+    )
+    suspend fun selectRandomBySystem(systemId: String, limit: Int): List<Game>
+
+    @Query("SELECT * FROM games WHERE systemId IN (:systemIds) AND isHidden = 0 ORDER BY title ASC, id DESC")
     fun selectBySystems(systemIds: List<String>): PagingSource<Int, Game>
 
     @Query("SELECT DISTINCT systemId FROM games ORDER BY systemId ASC")
     suspend fun selectSystems(): List<String>
 
-    @Query("SELECT count(*) count, systemId systemId FROM games GROUP BY systemId")
+    @Query("SELECT count(*) count, systemId systemId FROM games WHERE isHidden = 0 GROUP BY systemId")
     fun selectSystemsWithCount(): Flow<List<SystemCount>>
+
+    @Query("SELECT * FROM games WHERE isHidden = 1 ORDER BY title ASC")
+    fun selectHidden(): Flow<List<Game>>
+
+    @Query("SELECT * FROM games WHERE description IS NULL AND isHidden = 0")
+    suspend fun selectGamesMissingMetadata(): List<Game>
 
     @Insert
     fun insert(games: List<Game>): List<Long>
