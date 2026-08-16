@@ -22,6 +22,10 @@
     <string name="pref_key_enable_immersive_mode" translatable="false">enable_immersive_mode</string>
     <string name="pref_key_theme_mode" translatable="false">theme_mode</string>
     <string name="pref_key_setup_complete" translatable="false">setup_complete</string>
+    <string name="pref_key_scraper_devid" translatable="false">scraper_devid</string>
+    <string name="pref_key_scraper_devpassword" translatable="false">scraper_devpassword</string>
+    <string name="pref_key_scraper_username" translatable="false">scraper_username</string>
+    <string name="pref_key_scraper_password" translatable="false">scraper_password</string>
 
     <string name="pref_key_save_sync_auto" translatable="false">save_sync_auto</string>
     <string name="pref_key_save_sync_enable" translatable="false">save_sync_enable</string>

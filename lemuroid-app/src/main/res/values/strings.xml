@@ -58,6 +58,19 @@
     <string name="setup_get_started">Get started</string>
     <string name="settings_title_hidden_games">Hidden games</string>
     <string name="settings_description_hidden_games">Restore games you hid</string>
+    <string name="settings_category_metadata">Metadata</string>
+    <string name="settings_title_scraper_devid">Developer ID</string>
+    <string name="settings_description_scraper_devid">ScreenScraper developer ID (devid)</string>
+    <string name="settings_title_scraper_devpassword">Developer password</string>
+    <string name="settings_title_scraper_username">Username</string>
+    <string name="settings_title_scraper_password">Password</string>
+    <string name="settings_scrape_all">Scrape missing games</string>
+    <string name="settings_description_scrape_all">Fetch titles, descriptions and box art for games without metadata</string>
+    <string name="settings_scrape_progress">Scraped %1$d of %2$d games</string>
+    <string name="settings_scrape_done">Done: %1$d games updated</string>
+    <string name="settings_scrape_error">Scraping failed — check your credentials and try again</string>
+    <string name="game_details_scrape">Scrape metadata</string>
+    <string name="game_details_scrape_error">Could not scrape this game — check credentials in Settings</string>
 
     <string name="settings_category_general">General</string>
     <string name="settings_category_appearance">Appearance</string>

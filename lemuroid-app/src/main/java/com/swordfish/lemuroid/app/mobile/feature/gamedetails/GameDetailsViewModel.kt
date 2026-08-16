@@ -7,10 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.swordfish.lemuroid.R
+import com.swordfish.lemuroid.app.shared.metadata.ScraperCredentials
+import com.swordfish.lemuroid.app.shared.metadata.ScreenScraperService
 import com.swordfish.lemuroid.lib.library.GameSystem
 import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
 import com.swordfish.lemuroid.lib.library.db.entity.Game
+import com.swordfish.lemuroid.lib.preferences.SharedPreferencesHelper
 import java.io.File
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
@@ -36,6 +40,40 @@ class GameDetailsViewModel(
             .gameDao()
             .selectGame(gameId)
             .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
+    private val scraperService = ScreenScraperService()
+
+    val isScraping = MutableStateFlow(false)
+
+    val lastScrapeFailed = MutableStateFlow(false)
+
+    fun onScrapeMetadata(game: Game) {
+        if (isScraping.value) {
+            return
+        }
+        viewModelScope.launch {
+            isScraping.value = true
+            lastScrapeFailed.value = false
+            val credentials = scraperCredentials()
+            val result = scraperService.scrapeGame(applicationContext, game, credentials)
+            if (result != null) {
+                retrogradeDb.gameDao().update(game.copyWithScrapeResult(result))
+            } else {
+                lastScrapeFailed.value = true
+            }
+            isScraping.value = false
+        }
+    }
+
+    private fun scraperCredentials(): ScraperCredentials {
+        val prefs = SharedPreferencesHelper.getSharedPreferences(applicationContext)
+        return ScraperCredentials(
+            devId = prefs.getString(applicationContext.getString(R.string.pref_key_scraper_devid), "") ?: "",
+            devPassword = prefs.getString(applicationContext.getString(R.string.pref_key_scraper_devpassword), "") ?: "",
+            username = prefs.getString(applicationContext.getString(R.string.pref_key_scraper_username), "") ?: "",
+            password = prefs.getString(applicationContext.getString(R.string.pref_key_scraper_password), "") ?: "",
+        )
+    }
 
     fun coreConfigs(systemId: String) = GameSystem.findById(systemId).systemCoreConfigs
 

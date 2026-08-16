@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
@@ -20,11 +21,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -81,7 +84,11 @@ fun GameDetailsScreen(
                     ?: -1
             if (overrideIndex >= 0) overrideIndex + 1 else 0
         }
-    val coreState = rememberMemoryIntSettingState(coreIndex, currentGame.id)
+    val coreState = rememberMemoryIntSettingState(coreIndex)
+
+    LaunchedEffect(currentGame.id) {
+        coreState.value = coreIndex
+    }
 
     Column(
         modifier =
@@ -174,6 +181,29 @@ fun GameDetailsScreen(
                     text = description,
                     style = MaterialTheme.typography.bodyMedium,
                 )
+            }
+            val isScraping by viewModel.isScraping.collectAsState()
+            val lastScrapeFailed by viewModel.lastScrapeFailed.collectAsState()
+            if (isScraping) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            } else if (lastScrapeFailed) {
+                Text(
+                    text = stringResource(R.string.game_details_scrape_error),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+            OutlinedButton(
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !isScraping,
+                onClick = { viewModel.onScrapeMetadata(currentGame) },
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Download,
+                    contentDescription = null,
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(text = stringResource(R.string.game_details_scrape))
             }
             val screenshotUrl = currentGame.screenshotUrl
             if (!screenshotUrl.isNullOrBlank()) {

@@ -1,13 +1,24 @@
 package com.swordfish.lemuroid.app.mobile.feature.settings.general
 
 import android.net.Uri
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 import androidx.documentfile.provider.DocumentFile
 import androidx.navigation.NavController
 import com.swordfish.lemuroid.R
@@ -24,6 +35,7 @@ import com.swordfish.lemuroid.app.utils.android.settings.booleanPreferenceState
 import com.swordfish.lemuroid.app.utils.android.settings.indexPreferenceState
 import com.swordfish.lemuroid.app.utils.android.settings.intPreferenceState
 import com.swordfish.lemuroid.app.utils.android.stringListResource
+import com.swordfish.lemuroid.lib.preferences.SharedPreferencesHelper
 
 @Composable
 fun SettingsScreen(
@@ -55,6 +67,7 @@ fun SettingsScreen(
         )
         GeneralSettings()
         AppearanceSettings()
+        MetadataSettings(viewModel = viewModel)
         InputSettings(navController = navController)
         MiscSettings(
             indexingInProgress = indexingInProgress,
@@ -112,6 +125,129 @@ private fun MiscSettings(
             onClick = { navController.navigateToRoute(MainRoute.SETTINGS_ADVANCED) },
         )
     }
+}
+
+@Composable
+private fun MetadataSettings(viewModel: SettingsViewModel) {
+    val context = LocalContext.current
+    val prefs = remember {
+        SharedPreferencesHelper.getSharedPreferences(context)
+    }
+    val devIdKey = stringResource(R.string.pref_key_scraper_devid)
+    val devPasswordKey = stringResource(R.string.pref_key_scraper_devpassword)
+    val usernameKey = stringResource(R.string.pref_key_scraper_username)
+    val passwordKey = stringResource(R.string.pref_key_scraper_password)
+
+    var devId by remember { mutableStateOf(prefs.getString(devIdKey, "") ?: "") }
+    var devPassword by remember { mutableStateOf(prefs.getString(devPasswordKey, "") ?: "") }
+    var username by remember { mutableStateOf(prefs.getString(usernameKey, "") ?: "") }
+    var password by remember { mutableStateOf(prefs.getString(passwordKey, "") ?: "") }
+
+    val scrapeState by viewModel.scrapeState.collectAsState()
+
+    LemuroidCardSettingsGroup(
+        title = { Text(text = stringResource(id = R.string.settings_category_metadata)) },
+    ) {
+        MetadataTextField(
+            label = stringResource(R.string.settings_title_scraper_devid),
+            value = devId,
+            onValueChange = {
+                devId = it
+                prefs.edit().putString(devIdKey, it).apply()
+            },
+        )
+        MetadataTextField(
+            label = stringResource(R.string.settings_title_scraper_devpassword),
+            value = devPassword,
+            isPassword = true,
+            onValueChange = {
+                devPassword = it
+                prefs.edit().putString(devPasswordKey, it).apply()
+            },
+        )
+        MetadataTextField(
+            label = stringResource(R.string.settings_title_scraper_username),
+            value = username,
+            onValueChange = {
+                username = it
+                prefs.edit().putString(usernameKey, it).apply()
+            },
+        )
+        MetadataTextField(
+            label = stringResource(R.string.settings_title_scraper_password),
+            value = password,
+            isPassword = true,
+            onValueChange = {
+                password = it
+                prefs.edit().putString(passwordKey, it).apply()
+            },
+        )
+        LemuroidSettingsMenuLink(
+            title = { Text(text = stringResource(id = R.string.settings_scrape_all)) },
+            subtitle = {
+                Text(text = stringResource(id = R.string.settings_description_scrape_all))
+            },
+            enabled = scrapeState !is SettingsViewModel.ScrapeState.Running,
+            onClick = { viewModel.onScrapeAll() },
+        )
+        when (val scrapeStateValue = scrapeState) {
+            is SettingsViewModel.ScrapeState.Running -> {
+                Text(
+                    text =
+                        stringResource(
+                            R.string.settings_scrape_progress,
+                            scrapeStateValue.scraped,
+                            scrapeStateValue.total,
+                        ),
+                    style = MaterialTheme.typography.labelMedium,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+            is SettingsViewModel.ScrapeState.Done -> {
+                Text(
+                    text = stringResource(R.string.settings_scrape_done, scrapeStateValue.scraped),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
+            SettingsViewModel.ScrapeState.Error -> {
+                Text(
+                    text = stringResource(R.string.settings_scrape_error),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.error,
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                )
+            }
+            SettingsViewModel.ScrapeState.Idle -> Unit
+        }
+    }
+}
+
+@Composable
+private fun MetadataTextField(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    isPassword: Boolean = false,
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        label = { Text(text = label) },
+        singleLine = true,
+        visualTransformation =
+            if (isPassword) {
+                PasswordVisualTransformation()
+            } else {
+                VisualTransformation.None
+            },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+    )
 }
 
 @Composable

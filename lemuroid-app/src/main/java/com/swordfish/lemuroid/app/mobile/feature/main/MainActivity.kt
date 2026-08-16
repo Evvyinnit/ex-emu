@@ -335,6 +335,7 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
                                                     applicationContext,
                                                 ),
                                             ),
+                                            retrogradeDb,
                                         ),
                                 ),
                             navController = navController,
