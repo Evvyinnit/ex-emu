@@ -10,12 +10,15 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.swordfish.lemuroid.app.shared.library.PendingOperationsMonitor
 import com.swordfish.lemuroid.app.shared.settings.StorageFrameworkPickerLauncher
+import com.swordfish.lemuroid.app.shared.systems.MetaSystemInfo
 import com.swordfish.lemuroid.common.coroutines.combine
 import com.swordfish.lemuroid.lib.core.CoresSelection
 import com.swordfish.lemuroid.lib.library.CoreID
+import com.swordfish.lemuroid.lib.library.GameSystem
 import com.swordfish.lemuroid.lib.library.SystemID
 import com.swordfish.lemuroid.lib.library.db.RetrogradeDatabase
 import com.swordfish.lemuroid.lib.library.db.entity.Game
+import com.swordfish.lemuroid.lib.library.metaSystemID
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -65,6 +68,21 @@ class HomeViewModel(
     fun getViewStates(): Flow<UIState> {
         return uiStates
     }
+
+    val metaSystems: Flow<List<MetaSystemInfo>> =
+        retrogradeDb.gameDao()
+            .selectSystemsWithCount()
+            .map { systemCounts ->
+                systemCounts.asSequence()
+                    .filter { (_, count) -> count > 0 }
+                    .map { (systemId, count) -> GameSystem.findById(systemId).metaSystemID() to count }
+                    .groupBy { (metaSystemId, _) -> metaSystemId }
+                    .map { (metaSystemId, counts) ->
+                        MetaSystemInfo(metaSystemId, counts.sumOf { it.second })
+                    }
+                    .sortedBy { it.getName(appContext) }
+                    .toList()
+            }
 
     fun changeLocalStorageFolder(context: Context) {
         StorageFrameworkPickerLauncher.pickFolder(context)

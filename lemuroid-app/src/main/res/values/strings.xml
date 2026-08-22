@@ -92,7 +92,9 @@
     <string name="theme_mode_names_light">Light</string>
     <string name="theme_mode_names_dark">Dark</string>
     <string name="theme_mode_names_amoled">AMOLED Black</string>
-    <string name="settings_category_performance_profile">Performance profile</string>
+        <string name="home_continue_playing">Continue playing</string>
+    <string name="home_recently_added">Recently added</string>
+<string name="settings_category_performance_profile">Performance profile</string>
     <string name="performance_profile_names_performance">Fast</string>
     <string name="performance_profile_names_balanced">Balanced</string>
     <string name="performance_profile_names_quality">Quality</string>

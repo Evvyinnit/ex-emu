@@ -6,6 +6,7 @@ import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,6 +17,7 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -25,14 +27,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidCardShape
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidGameCard
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidSystemImage
+import com.swordfish.lemuroid.app.shared.systems.MetaSystemInfo
 import com.swordfish.lemuroid.app.utils.android.ComposableLifecycle
 import com.swordfish.lemuroid.common.displayDetailsSettingsScreen
 import com.swordfish.lemuroid.lib.library.db.entity.Game
@@ -44,6 +50,7 @@ fun HomeScreen(
     onGameClick: (Game) -> Unit,
     onGameLongClick: (Game) -> Unit,
     onOpenCoreSelection: () -> Unit,
+    onSystemClick: (MetaSystemInfo) -> Unit,
 ) {
     val context = LocalContext.current
     val applicationContext = context.applicationContext
@@ -67,12 +74,16 @@ fun HomeScreen(
         }
 
     val state = viewModel.getViewStates().collectAsState(HomeViewModel.UIState())
+    val metaSystems = viewModel.metaSystems.collectAsState(emptyList())
+
     HomeScreen(
         modifier,
         state.value,
+        metaSystems.value,
         onGameClick,
         onGameLongClick,
         onOpenCoreSelection,
+        onSystemClick,
         {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
                 return@HomeScreen
@@ -83,16 +94,18 @@ fun HomeScreen(
         { permissionsLauncher.launch(Manifest.permission.RECORD_AUDIO) },
         { viewModel.changeLocalStorageFolder(context) },
         { context.startActivity(Intent(context, ru.playsoftware.j2meloader.MainActivity::class.java)) },
-    ) // TODO COMPOSE We need to understand what's going to happen here.
+    )
 }
 
 @Composable
 private fun HomeScreen(
     modifier: Modifier = Modifier,
     state: HomeViewModel.UIState,
+    metaSystems: List<MetaSystemInfo>,
     onGameClicked: (Game) -> Unit,
     onGameLongClick: (Game) -> Unit,
     onOpenCoreSelection: () -> Unit,
+    onSystemClick: (MetaSystemInfo) -> Unit,
     onEnableNotificationsClicked: () -> Unit,
     onEnableMicrophoneClicked: () -> Unit,
     onSetDirectoryClicked: () -> Unit,
@@ -102,9 +115,14 @@ private fun HomeScreen(
         modifier =
             modifier
                 .verticalScroll(rememberScrollState())
-                .padding(top = 16.dp, bottom = 16.dp),
+                .padding(top = 8.dp, bottom = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        Text(
+            text = stringResource(id = R.string.lemuroid_name),
+            style = MaterialTheme.typography.displayLarge,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp),
+        )
         AnimatedVisibility(state.showNoNotificationPermissionCard) {
             HomeNotification(
                 titleId = R.string.home_notification_title,
@@ -138,25 +156,81 @@ private fun HomeScreen(
                 onAction = onOpenCoreSelection,
             )
         }
+        HomeRow(
+            title = stringResource(id = R.string.home_continue_playing),
+            games = state.recentGames,
+            onGameClicked = onGameClicked,
+            onGameLongClick = onGameLongClick,
+        )
+        if (metaSystems.isNotEmpty()) {
+            HomeSystemsRow(metaSystems = metaSystems, onSystemClick = onSystemClick)
+        }
+        HomeRow(
+            title = stringResource(id = R.string.favorites),
+            games = state.favoritesGames,
+            onGameClicked = onGameClicked,
+            onGameLongClick = onGameLongClick,
+        )
+        HomeRow(
+            title = stringResource(id = R.string.home_recently_added),
+            games = state.discoveryGames,
+            onGameClicked = onGameClicked,
+            onGameLongClick = onGameLongClick,
+        )
         HomeJavaGamesCard(onOpenJavaGamesClicked)
-        HomeRow(
-            stringResource(id = R.string.recent),
-            state.recentGames,
-            onGameClicked,
-            onGameLongClick,
+    }
+}
+
+@Composable
+private fun HomeSystemsRow(
+    metaSystems: List<MetaSystemInfo>,
+    onSystemClick: (MetaSystemInfo) -> Unit,
+) {
+    val context = LocalContext.current
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Text(
+            text = stringResource(id = R.string.title_systems).uppercase(),
+            style = MaterialTheme.typography.labelLarge,
+            letterSpacing = 1.2.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         )
-        HomeRow(
-            stringResource(id = R.string.favorites),
-            state.favoritesGames,
-            onGameClicked,
-            onGameLongClick,
-        )
-        HomeRow(
-            stringResource(id = R.string.discover),
-            state.discoveryGames,
-            onGameClicked,
-            onGameLongClick,
-        )
+        LazyRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
+        ) {
+            items(metaSystems.size, key = { metaSystems[it].metaSystem }) { index ->
+                val system = metaSystems[index]
+                Card(
+                    modifier =
+                        Modifier
+                            .widthIn(min = 104.dp)
+                            .shadow(2.dp, LemuroidCardShape),
+                    onClick = { onSystemClick(system) },
+                    shape = LemuroidCardShape,
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.surface,
+                        ),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        LemuroidSystemImage(system)
+                        Text(
+                            text = system.getName(context),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(horizontal = 6.dp, vertical = 6.dp),
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
