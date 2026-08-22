@@ -1,8 +1,11 @@
 package com.swordfish.lemuroid.app.mobile.feature.settings.general
 
 import android.net.Uri
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -12,6 +15,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +29,7 @@ import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.feature.main.MainRoute
 import com.swordfish.lemuroid.app.mobile.feature.main.navigateToRoute
 import com.swordfish.lemuroid.app.shared.library.LibraryIndexScheduler
+import com.swordfish.lemuroid.app.shared.settings.PerformanceProfiles
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidCardSettingsGroup
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidSettingsList
 import com.swordfish.lemuroid.app.utils.android.settings.LemuroidSettingsMenuLink
@@ -36,6 +41,7 @@ import com.swordfish.lemuroid.app.utils.android.settings.indexPreferenceState
 import com.swordfish.lemuroid.app.utils.android.settings.intPreferenceState
 import com.swordfish.lemuroid.app.utils.android.stringListResource
 import com.swordfish.lemuroid.lib.preferences.SharedPreferencesHelper
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsScreen(
@@ -67,6 +73,7 @@ fun SettingsScreen(
         )
         GeneralSettings()
         AppearanceSettings()
+        PerformanceProfileSettings()
         MetadataSettings(viewModel = viewModel)
         RetroAchievementsSettings(navController = navController)
         InputSettings(navController = navController)
@@ -335,6 +342,72 @@ private fun AppearanceSettings() {
             title = { Text(text = stringResource(id = R.string.settings_title_theme_mode)) },
             subtitle = { Text(text = stringResource(id = R.string.settings_description_theme_mode)) },
             items = stringListResource(R.array.pref_key_theme_mode_display_names),
+        )
+    }
+}
+
+@Composable
+private fun PerformanceProfileSettings() {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var activeProfile by
+        remember {
+            mutableStateOf(
+                PerformanceProfiles.getActiveProfile(
+                    SharedPreferencesHelper.getSharedPreferences(context),
+                ),
+            )
+        }
+    var lastAppliedCount by remember { mutableStateOf<Int?>(null) }
+
+    LemuroidCardSettingsGroup(
+        title = { Text(text = stringResource(id = R.string.settings_category_performance_profile)) },
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            PerformanceProfiles.Profile.entries.forEach { profile ->
+                FilterChip(
+                    selected = activeProfile == profile,
+                    onClick = {
+                        scope.launch {
+                            lastAppliedCount = PerformanceProfiles.applyProfile(context, profile)
+                            activeProfile = profile
+                        }
+                    },
+                    label = {
+                        Text(
+                            text =
+                                stringResource(
+                                    when (profile) {
+                                        PerformanceProfiles.Profile.PERFORMANCE -> R.string.performance_profile_names_performance
+                                        PerformanceProfiles.Profile.BALANCED -> R.string.performance_profile_names_balanced
+                                        PerformanceProfiles.Profile.QUALITY -> R.string.performance_profile_names_quality
+                                        PerformanceProfiles.Profile.BATTERY_SAVER -> R.string.performance_profile_names_battery
+                                    },
+                                ),
+                        )
+                    },
+                )
+            }
+        }
+        Text(
+            text =
+                if (lastAppliedCount != null) {
+                    stringResource(R.string.settings_performance_profile_applied, lastAppliedCount!!)
+                } else {
+                    stringResource(R.string.settings_performance_profile_hint)
+                },
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
         )
     }
 }

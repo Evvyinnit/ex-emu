@@ -101,6 +101,7 @@ object AppThemePreferences {
     const val THEME_MODE_SYSTEM = "system"
     const val THEME_MODE_LIGHT = "light"
     const val THEME_MODE_DARK = "dark"
+    const val THEME_MODE_AMOLED = "amoled"
 
     fun themeMode(context: Context): String =
         SharedPreferencesHelper.getSharedPreferences(context)
@@ -110,11 +111,13 @@ object AppThemePreferences {
     fun isDarkTheme(context: Context): Boolean =
         when (themeMode(context)) {
             THEME_MODE_LIGHT -> false
-            THEME_MODE_DARK -> true
+            THEME_MODE_DARK, THEME_MODE_AMOLED -> true
             else ->
                 (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
                     Configuration.UI_MODE_NIGHT_YES
         }
+
+    fun isAmoledTheme(context: Context): Boolean = themeMode(context) == THEME_MODE_AMOLED
 }
 
 private val LemuroidTypography =
@@ -133,14 +136,32 @@ private val LemuroidTypography =
         labelSmall = TextStyle(fontFamily = AntaFontFamily, fontWeight = FontWeight.Medium, fontSize = 11.sp, lineHeight = 16.sp),
     )
 
+private val AmoledColorScheme =
+    DarkColorScheme.copy(
+        background = md_theme_amoled_background,
+        onBackground = md_theme_amoled_onBackground,
+        surface = md_theme_amoled_surface,
+        onSurface = md_theme_amoled_onSurface,
+        surfaceVariant = md_theme_amoled_surfaceVariant,
+        onSurfaceVariant = md_theme_amoled_onSurfaceVariant,
+        outline = md_theme_amoled_outline,
+        inverseOnSurface = md_theme_amoled_inverseOnSurface,
+        outlineVariant = md_theme_amoled_outlineVariant,
+    )
+
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    amoled: Boolean = false,
     content: @Composable () -> Unit,
 ) {
     val colors =
-        remember(darkTheme) {
-            if (darkTheme) DarkColorScheme else LightColorScheme
+        remember(darkTheme, amoled) {
+            when {
+                darkTheme && amoled -> AmoledColorScheme
+                darkTheme -> DarkColorScheme
+                else -> LightColorScheme
+            }
         }
 
     MaterialTheme(

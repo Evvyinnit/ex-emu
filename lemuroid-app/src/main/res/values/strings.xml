@@ -68,8 +68,8 @@
     <string name="settings_description_scrape_all">Fetch titles, descriptions and box art for games without metadata</string>
     <string name="settings_scrape_progress">Scraped %1$d of %2$d games</string>
     <string name="settings_scrape_done">Done: %1$d games updated</string>
-    <string name="settings_scrape_error">Scraping failed — check your credentials and try again</string>
-    <string name="game_details_scrape_error">Could not scrape this game — check credentials in Settings</string>
+    <string name="settings_scrape_error">Scraping failed â€” check your credentials and try again</string>
+    <string name="game_details_scrape_error">Could not scrape this game â€” check credentials in Settings</string>
     <string name="settings_category_achievements">RetroAchievements</string>
     <string name="settings_title_ra_username">Username</string>
     <string name="settings_title_ra_api_key">API key</string>
@@ -78,9 +78,9 @@
     <string name="ra_member_since">Member since %1$s</string>
     <string name="ra_recently_played">Recently played</string>
     <string name="ra_points">%1$d points</string>
-    <string name="ra_dashboard_error">Could not load your profile — check your RetroAchievements settings</string>
+    <string name="ra_dashboard_error">Could not load your profile â€” check your RetroAchievements settings</string>
     <string name="game_details_achievements_none">No achievements earned yet</string>
-    <string name="game_details_achievements_error">Could not load achievements — check your RetroAchievements settings</string>
+    <string name="game_details_achievements_error">Could not load achievements â€” check your RetroAchievements settings</string>
 
     <string name="settings_category_general">General</string>
     <string name="settings_category_appearance">Appearance</string>
@@ -91,6 +91,14 @@
     <string name="theme_mode_names_system">System default</string>
     <string name="theme_mode_names_light">Light</string>
     <string name="theme_mode_names_dark">Dark</string>
+    <string name="theme_mode_names_amoled">AMOLED Black</string>
+    <string name="settings_category_performance_profile">Performance profile</string>
+    <string name="performance_profile_names_performance">Fast</string>
+    <string name="performance_profile_names_balanced">Balanced</string>
+    <string name="performance_profile_names_quality">Quality</string>
+    <string name="performance_profile_names_battery">Battery saver</string>
+    <string name="settings_performance_profile_applied">Applied %1$d option changes across your systems.</string>
+    <string name="settings_performance_profile_hint">One tap tunes every supported core option (frameskip, resolution, CPU mode, filters). Per-game overrides still win.</string>
     <string name="error_loading_games">Failed to load games</string>
     <string name="retry">Retry</string>
     <string name="settings_title_enable_autosave">Autosave state</string>
@@ -177,11 +185,11 @@
     <string name="home_empty_action">Select Directory</string>
 
     <string name="home_notification_desmume_deprecated_title">DeSmuME is being retired</string>
-    <string name="home_notification_desmume_deprecated_message">Save in-game, then switch to melonDS to keep your progress. Save states won\’t transfer and will remain usable only in DeSmuME.</string>
+    <string name="home_notification_desmume_deprecated_message">Save in-game, then switch to melonDS to keep your progress. Save states won\â€™t transfer and will remain usable only in DeSmuME.</string>
     <string name="home_notification_desmume_deprecated_action">Switch to melonDS</string>
 
     <string name="java_games_title">Java (J2ME) games</string>
-    <string name="java_games_message">Play classic mobile games made for Java-enabled phones. Load .jar/.jad files and configure each game\’s keys and display.</string>
+    <string name="java_games_message">Play classic mobile games made for Java-enabled phones. Load .jar/.jad files and configure each game\â€™s keys and display.</string>
     <string name="java_games_open_action">Open Java Games</string>
 
     <string name="game_menu_save">Save</string>
@@ -197,7 +205,7 @@
     <string name="game_menu_change_disk_disk">Disk %1$s</string>
     <string name="game_menu_tilt_sensor">Tilt Sensor</string>
 
-    <string name="game_loading_preparing_game">Preparing game…</string>
+    <string name="game_loading_preparing_game">Preparing gameâ€¦</string>
 
     <string name="game_toast_settings_button_using_gamepad">Gamepad detected. Access settings menu with %1$s.</string>
     <string name="game_toast_load_state_failed">Cannot load this state</string>

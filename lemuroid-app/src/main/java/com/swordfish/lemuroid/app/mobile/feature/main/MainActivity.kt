@@ -143,18 +143,20 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
     private fun MainScreen(navController: NavHostController) {
         val context = LocalContext.current
         var darkTheme by remember { mutableStateOf(AppThemePreferences.isDarkTheme(context)) }
+        var amoledTheme by remember { mutableStateOf(AppThemePreferences.isAmoledTheme(context)) }
         DisposableEffect(context) {
             val prefs = SharedPreferencesHelper.getSharedPreferences(context)
             val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
                 if (key == AppThemePreferences.THEME_MODE_PREF_KEY) {
                     darkTheme = AppThemePreferences.isDarkTheme(context)
+                    amoledTheme = AppThemePreferences.isAmoledTheme(context)
                 }
             }
             prefs.registerOnSharedPreferenceChangeListener(listener)
             onDispose { prefs.unregisterOnSharedPreferenceChangeListener(listener) }
         }
 
-        AppTheme(darkTheme = darkTheme) {
+        AppTheme(darkTheme = darkTheme, amoled = amoledTheme) {
             val setupPrefs = SharedPreferencesHelper.getSharedPreferences(context)
             var setupComplete by
                 remember {

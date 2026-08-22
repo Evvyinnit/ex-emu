@@ -63,3 +63,13 @@ val md_theme_dark_shadow = Color(0xFF09090B)
 val md_theme_dark_surfaceTint = Color(0xFF605DFF)
 val md_theme_dark_outlineVariant = Color(0xFF272E36)
 val md_theme_dark_scrim = Color(0xFF09090B)
+// NeoStation OLED theme: true-black background, dim surfaces.
+val md_theme_amoled_background = Color(0xFF000000)
+val md_theme_amoled_onBackground = md_theme_dark_onBackground
+val md_theme_amoled_surface = Color(0xFF141414)
+val md_theme_amoled_onSurface = md_theme_dark_onSurface
+val md_theme_amoled_surfaceVariant = Color(0xFF1A1A1E)
+val md_theme_amoled_onSurfaceVariant = md_theme_dark_onSurfaceVariant
+val md_theme_amoled_outline = Color(0xFF181818)
+val md_theme_amoled_outlineVariant = Color(0xFF232327)
+val md_theme_amoled_inverseOnSurface = Color(0xFF000000)

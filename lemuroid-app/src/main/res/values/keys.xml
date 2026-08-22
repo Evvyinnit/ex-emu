@@ -69,11 +69,13 @@
         <item>system</item>
         <item>light</item>
         <item>dark</item>
+        <item>amoled</item>
     </string-array>
 
     <string-array translatable="false" name="pref_key_theme_mode_display_names">
         <item>@string/theme_mode_names_system</item>
         <item>@string/theme_mode_names_light</item>
         <item>@string/theme_mode_names_dark</item>
+        <item>@string/theme_mode_names_amoled</item>
     </string-array>
 </resources>
