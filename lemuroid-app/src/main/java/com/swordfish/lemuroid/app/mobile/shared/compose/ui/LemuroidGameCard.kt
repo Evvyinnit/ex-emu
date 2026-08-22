@@ -1,8 +1,5 @@
 package com.swordfish.lemuroid.app.mobile.shared.compose.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -63,18 +60,12 @@ fun LemuroidGameCard(
         ) {
             Box {
                 LemuroidGameImage(game = game)
-                AnimatedVisibility(
-                    visible = game.isFavorite,
-                    enter = fadeIn(),
-                    exit = fadeOut(),
-                    modifier =
-                        Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(6.dp),
-                ) {
+                if (game.isFavorite) {
                     Box(
                         modifier =
                             Modifier
+                                .align(Alignment.TopEnd)
+                                .padding(6.dp)
                                 .size(22.dp)
                                 .clip(CircleShape)
                                 .background(Color.Black.copy(alpha = 0.45f)),
