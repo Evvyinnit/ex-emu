@@ -11,8 +11,8 @@ import java.util.Properties
 
 android {
     defaultConfig {
-        versionCode = 306
-        versionName = "2.6.0"
+        versionCode = 307
+        versionName = "2.7.0"
         applicationId = "com.exemu"
     }
 

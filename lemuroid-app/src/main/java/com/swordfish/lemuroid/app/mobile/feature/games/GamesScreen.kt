@@ -52,6 +52,7 @@ import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidErrorView
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidGameCard
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidGameImage
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidGameListRow
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.MaxContentWidth
 import com.swordfish.lemuroid.lib.library.db.entity.Game
 import kotlinx.coroutines.delay
 
@@ -71,7 +72,8 @@ fun GamesScreen(
     var letterFilter by remember { mutableStateOf<String?>(null) }
     var showRandomDialog by remember { mutableStateOf(false) }
 
-    Column(modifier = modifier.fillMaxSize()) {
+    MaxContentWidth(modifier = modifier) {
+        Column(modifier = Modifier.fillMaxSize()) {
         GamesHeaderRow(
             sortMode = sortMode,
             viewMode = viewMode,
@@ -108,6 +110,7 @@ fun GamesScreen(
                     }
                 }
             }
+        }
         }
     }
 

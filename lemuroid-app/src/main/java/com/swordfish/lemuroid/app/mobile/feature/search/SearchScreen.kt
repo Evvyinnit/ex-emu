@@ -20,6 +20,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidEmptyView
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidGameListRow
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.MaxContentWidth
 import com.swordfish.lemuroid.lib.library.db.entity.Game
 
 @Composable
@@ -43,6 +44,7 @@ fun SearchScreen(
         viewModel.queryString.value = searchQuery
     }
 
+    MaxContentWidth {
     AnimatedContent(
         targetState = searchState.value,
         label = "SearchContent",
@@ -70,6 +72,7 @@ fun SearchScreen(
                     onGameFavoriteToggle,
                 )
             }
+        }
         }
     }
 }

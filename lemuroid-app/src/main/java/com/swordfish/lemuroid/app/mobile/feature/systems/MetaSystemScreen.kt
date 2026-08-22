@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidEmptyView
+import com.swordfish.lemuroid.app.mobile.shared.compose.ui.MaxContentWidth
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidSystemCard
 import com.swordfish.lemuroid.app.shared.systems.MetaSystemInfo
 
@@ -39,20 +40,22 @@ private fun MetaSystemsScreen(
         return
     }
 
-    LazyVerticalGrid(
-        modifier = modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 16.dp),
-        columns = GridCells.Adaptive(144.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        items(metaSystems.size, key = { metaSystems[it].metaSystem }) { index ->
-            val system = metaSystems[index]
-            LemuroidSystemCard(
-                modifier = Modifier.animateItem(),
-                system = system,
-                onClick = { onSystemClicked(system) },
-            )
+    MaxContentWidth(modifier = modifier) {
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(horizontal = 12.dp, vertical = 16.dp),
+            columns = GridCells.Adaptive(144.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            items(metaSystems.size, key = { metaSystems[it].metaSystem }) { index ->
+                val system = metaSystems[index]
+                LemuroidSystemCard(
+                    modifier = Modifier.animateItem(),
+                    system = system,
+                    onClick = { onSystemClicked(system) },
+                )
+            }
         }
     }
 }

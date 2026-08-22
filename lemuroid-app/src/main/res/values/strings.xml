@@ -94,6 +94,7 @@
     <string name="theme_mode_names_amoled">AMOLED Black</string>
         <string name="home_continue_playing">Continue playing</string>
     <string name="home_recently_added">Recently added</string>
+    <string name="home_last_played">Last played</string>
 <string name="settings_category_performance_profile">Performance profile</string>
     <string name="performance_profile_names_performance">Fast</string>
     <string name="performance_profile_names_balanced">Balanced</string>
