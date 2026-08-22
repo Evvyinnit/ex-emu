@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
 import com.swordfish.lemuroid.R
 import com.swordfish.lemuroid.app.mobile.shared.compose.ui.LemuroidCardShape
@@ -102,7 +103,7 @@ private fun HomeScreen(
             modifier
                 .verticalScroll(rememberScrollState())
                 .padding(top = 16.dp, bottom = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
         AnimatedVisibility(state.showNoNotificationPermissionCard) {
             HomeNotification(
@@ -173,16 +174,18 @@ private fun HomeRow(
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+            text = title.uppercase(),
+            style = MaterialTheme.typography.labelLarge,
+            letterSpacing = 1.2.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
         )
         LazyRow(
             modifier =
                 Modifier
                     .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp),
-            contentPadding = PaddingValues(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp),
         ) {
             items(games.size, key = { games[it].id }) { index ->
                 val game = games[index]

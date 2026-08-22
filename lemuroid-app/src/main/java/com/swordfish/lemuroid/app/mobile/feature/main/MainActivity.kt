@@ -216,15 +216,14 @@ class MainActivity : RetrogradeComponentActivity(), BusyActivity {
 
             Scaffold(
                 topBar = {
-                    MainTopBar(
+                    MainHeader(
                         currentRoute = currentRoute,
                         navController = navController,
-                        onHelpPressed = onHelpPressed,
                         mainUIState = mainUIState,
+                        onHelpPressed = onHelpPressed,
                         onUpdateQueryString = { mainViewModel.changeQueryString(it) },
                     )
                 },
-                bottomBar = { MainNavigationBar(currentRoute, navController) },
             ) { padding ->
                 NavHost(
                     modifier = Modifier.fillMaxSize(),

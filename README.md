@@ -29,8 +29,9 @@ Ex Emu stands on the shoulders of many great open-source projects:
   the app is a fork of Lemuroid; its libretro integration, library, and
   architecture are inherited from it
 - **[NeoStation](https://github.com/misobadev/neostation-frontend)** by
-  **misobadev** — the UI design ported in v2.2.0 is inspired by NeoStation's
-  visual language (colors, shapes, typography)
+  **misobadev** — since v2.4.0 the mobile interface ports NeoStation's console-style
+  design: top tab-pill navigation with sliding indicator, clock/battery status pill,
+  Anta typography, themed system/game cards
 - **[libretro](https://www.libretro.com/)** and the authors of all emulation
   cores (mGBA, melonDS, mupen64plus, Snes9x, FCEUmm, PPSSPP, PCSX ReARMed,
   Play!, Citra, DosBox Pure, FBNeo, MAME, …)
